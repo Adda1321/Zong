@@ -1,38 +1,94 @@
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  /* text-align: center; */
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-self: center;
+  align-items: center;
+  align-content: center;
 }
 
-.App-link {
-  color: #61dafb;
-}
+ .navbar-link{
+   text-decoration: none !important;
+   color:black !important
+   
+ }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+ .btn{
+   position: relative;
+   background: #fbfaff;
+   color: black;
+   /* width: 10rem; */
+   margin-bottom: 2rem;
+   padding: 1rem 0;
+   border: none;
+   outline: none;
+   font-size: 1.2rem;
+   font-weight: 800;
+  
+margin-left: 10px;
+
+ }
+ .btn::after{
+   content: '';
+   position: absolute;
+   width: 100%;
+   height: 0.175rem;
+   background:#ea0e4b ;
+   left: 0;
+   bottom: 0;
+cursor: pointer;
+ }
+ .btn-start::after{
+
+  transform: scale(0,1);
+transition: transform 0.3s ease;
+ }
+
+ .btn-start:hover::after{
+/* color: #ea0e4b; */
+  transform: scale(1,1);
+  
+ }
+ .btn:hover{
+  
+  box-shadow:
+  3.1px 2.3px 38.3px rgba(0, 0, 0, 0.022),
+  8.6px 6.3px 45.1px rgba(0, 0, 0, 0.033),
+  20.8px 15.1px 51px rgba(0, 0, 0, 0.043),
+  69px 50px 80px rgba(0, 0, 0, 0.07)
+;
+ }
+
+ .sidebar{
+  position: relative;
+ 
+ }
+ .sidebar::after{
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 0.175rem;
+  background:#FF1493 ;
+  left: 0;
+  bottom: 0;
+cursor: pointer;
+ }
+
+ .btn-sidebar::after{
+
+  transform: scale(0,1);
+transition: transform 0.3s ease;
+ }
+
+ .btn-sidebar:hover::after{
+
+  transform: scale(1,1);
+  
+ }
+ .btn-sidebarSec::after{
+
+  transform: scale(0,1);
+transition: transform 0.3s ease;
+transform: scale(1,1);
+ }
+ 
