@@ -39,7 +39,12 @@ import CampaignIcon from "@mui/icons-material/Campaign";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import Adda from '../../Adda.PNG'
+import InputLabel from "@mui/material/InputLabel";
+import FlagIcon from "../FactoryIcon";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+
+import Adda from "../../Adda.PNG";
 const drawerWidth = 240;
 
 const pages = ["Analytics", "Communication Records", "03248562947"];
@@ -49,6 +54,9 @@ const settings = [
   { name: "Logout", icon: <LogoutOutlinedIcon /> },
 ];
 
+const flag = {
+  // marginRight:100
+};
 const openedMixin = (theme) => ({
   width: drawerWidth,
   transition: theme.transitions.create("width", {
@@ -82,7 +90,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
+  // zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -132,9 +140,26 @@ export default function MiniDrawer(props) {
 
   const [open, setOpen] = React.useState(false);
   const [over, setOver] = React.useState(false);
-  const [path, setPath] = React.useState("");
+  const [path, setPath] = React.useState("/");
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [age, setAge] = React.useState(10);
+
+
+  React.useEffect(() => {
+    JSON.parse(window.localStorage.getItem('age'))? setAge(JSON.parse(window.localStorage.getItem('age'))) : setAge(10)
+    console.log('check' , JSON.parse(window.localStorage.getItem('age')))
+    // window.localStorage.clear();
+  }, []);
+
+  React.useEffect(() => {
+    window.localStorage.setItem('age', age);
+  }, [age]);
+
+
+  const handleChange = (event) => {
+    setAge(event.target.value);
+  };
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -178,36 +203,32 @@ export default function MiniDrawer(props) {
 
         <AppBar position="fixed" open={open} color={"primary"}>
           <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              sx={{
-                marginRight: 5,
-                ...(open && { display: "none" }),
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
-
-            <img
-              src="	http://zong-cap.com.pk/assets/images/China-Flag-icon.png"
-              width={60}
-              alt="BigCo Inc. logo"
-            />
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{
-                pl: 2,
-                mr: 2,
-                display: { xs: "none", md: "flex", color: "white" },
-              }}
-            >
-              Change Language
-            </Typography>
+            {open ? (
+              <IconButton onClick={handleDrawerClose} sx={{ ml: -2 }}>
+                {theme.direction === "rtl" ? (
+                  <ChevronRightIcon />
+                ) : (
+                  <ChevronLeftIcon />
+                )}
+              </IconButton>
+            ) : (
+              <>
+                <IconButton
+                  // color="inherit"
+                  aria-label="open drawer"
+                  onClick={handleDrawerOpen}
+                  edge="start"
+                  sx={{
+                    ml: 6,
+                    color: "#fff",
+                    // marginRight: 5,
+                    // ...(open && { display: 'none' }),
+                  }}
+                >
+                  <MenuIcon />
+                </IconButton>
+              </>
+            )}
 
             <Box
               noWrap
@@ -215,9 +236,6 @@ export default function MiniDrawer(props) {
             >
               {pages.map((page) => (
                 <>
-                  {/* <div className=" btn btn-start">
-asdddd
-</div> */}
                   <Button
                     className=" btn btn-start"
                     key={page}
@@ -235,7 +253,40 @@ asdddd
                 </>
               ))}
             </Box>
-
+            <Box>
+              <FormControl fullWidth sx={{ mr: 6 }}>
+                <InputLabel id="demo-simple-select-label">
+                  Select Language
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={age}
+                  label="SAMA Language"
+                  size="small"
+                  onChange={handleChange}
+                  sx={{
+                    textAlign: "initial",
+                    fontSize: "15px",
+                    color: "white",
+                    mr: 3,
+                  }}
+                >
+                  <MenuItem value={10}>
+                    <FlagIcon code={"cn"} size={"lg"} className={flag} />
+                    <span style={{ marginLeft: 5 }}>Chinese</span>
+                  </MenuItem>
+                  <MenuItem value={20}>
+                    <FlagIcon code={"gb"} size={"lg"} />
+                    <span style={{ marginLeft: 5 }}>English</span>
+                  </MenuItem>
+                  <MenuItem value={30}>
+                    <FlagIcon code={"de"} size={"lg"} />
+                    <span style={{ marginLeft: 5 }}>German</span>
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -260,9 +311,14 @@ asdddd
               >
                 {settings.map((setting) => (
                   <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
-                    <IconButton sx={{ color: "#8dc63f" }} disableFocusRipple disableTouchRipple disableRipple>
+                    <IconButton
+                      sx={{ color: "#8dc63f" }}
+                      disableFocusRipple
+                      disableTouchRipple
+                      disableRipple
+                    >
                       {setting.icon}
-                    </IconButton >
+                    </IconButton>
                     <Typography textAlign="center">{setting.name}</Typography>
                   </MenuItem>
                 ))}
@@ -271,28 +327,38 @@ asdddd
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
-          <DrawerHeader>
+          <DrawerHeader
+            className={`sidebar  ${
+              path === "/" ? "btn-sidebarSec" : "btn-sidebar"
+            } `}
+          >
             <Link to="/" style={{ color: "black", textDecoration: "none" }}>
-              <span onClick={() => (setPath(""), setOpen(false))}>
+              <span
+                onClick={() => (setPath(""), setOpen(false), samplefunc("/"))}
+              >
                 <img
-                  style={{
-                    justifyContent: "center",
-                    marginRight: 30,
-                    alignItems: "flex-start",
-                    backgroundColor: "red",
-                  }}
+                  style={
+                    open
+                      ? { marginRight: 70, marginBottom: 10 }
+                      : {
+                          marginRight: 0,
+                          width: 53,
+                          height: 43,
+                          marginBottom: 10,
+                        }
+                  }
                   src="	http://zong-cap.com.pk/assets/images/logo/product-logo.png"
                   alt="BigCo Inc. logo"
                 />
               </span>
             </Link>
-            <IconButton onClick={handleDrawerClose}>
+            {/* <IconButton onClick={handleDrawerClose}>
               {theme.direction === "rtl" ? (
                 <ChevronRightIcon />
               ) : (
                 <ChevronLeftIcon />
               )}
-            </IconButton>
+            </IconButton> */}
           </DrawerHeader>
           <Divider />
           <List>

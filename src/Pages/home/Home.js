@@ -1,4 +1,4 @@
-import Table from "../../components/Home/Table";
+
 import { Box } from "@mui/material";
 function Home() {
   return (
