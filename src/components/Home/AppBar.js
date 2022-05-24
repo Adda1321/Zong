@@ -54,9 +54,7 @@ const settings = [
   { name: "Logout", icon: <LogoutOutlinedIcon /> },
 ];
 
-const flag = {
-  // marginRight:100
-};
+ 
 const openedMixin = (theme) => ({
   width: drawerWidth,
   transition: theme.transitions.create("width", {
@@ -148,13 +146,17 @@ export default function MiniDrawer(props) {
 
   React.useEffect(() => {
     JSON.parse(window.localStorage.getItem('age'))? setAge(JSON.parse(window.localStorage.getItem('age'))) : setAge(10)
-    console.log('check' , JSON.parse(window.localStorage.getItem('age')))
+    window.localStorage.getItem('path') ? setPath((window.localStorage.getItem('path'))) : setPath("/")
+    console.log('path ->' ,  JSON.parse(window.localStorage.getItem('age')))
     // window.localStorage.clear();
   }, []);
 
   React.useEffect(() => {
+    console.log('path' , age);
     window.localStorage.setItem('age', age);
-  }, [age]);
+    window.localStorage.setItem('path', path);
+
+  }, [age,path]);
 
 
   const handleChange = (event) => {
@@ -234,8 +236,8 @@ export default function MiniDrawer(props) {
               noWrap
               sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}
             >
-              {pages.map((page) => (
-                <>
+              {pages.map((page,index) => (
+                <React.Fragment key={index}>
                   <Button
                     className=" btn btn-start"
                     key={page}
@@ -250,7 +252,7 @@ export default function MiniDrawer(props) {
                   >
                     {page}
                   </Button>
-                </>
+                  </React.Fragment >
               ))}
             </Box>
             <Box>
@@ -273,7 +275,7 @@ export default function MiniDrawer(props) {
                   }}
                 >
                   <MenuItem value={10}>
-                    <FlagIcon code={"cn"} size={"lg"} className={flag} />
+                    <FlagIcon code={"cn"} size={"lg"}  />
                     <span style={{ marginLeft: 5 }}>Chinese</span>
                   </MenuItem>
                   <MenuItem value={20}>
@@ -334,7 +336,7 @@ export default function MiniDrawer(props) {
           >
             <Link to="/" style={{ color: "black", textDecoration: "none" }}>
               <span
-                onClick={() => (setPath(""), setOpen(false), samplefunc("/"))}
+                onClick={() => ( setOpen(false), samplefunc("/"))}
               >
                 <img
                   style={
@@ -390,7 +392,7 @@ export default function MiniDrawer(props) {
               { name: "Voice Mail", icon: <HeadphonesIcon />, path: "Vmail" },
               { name: "Call Messages", icon: <ForumIcon />, path: "messages" },
             ].map((text, index) => (
-              <Tooltip title={text.name} placement="right-start">
+              <Tooltip title={text.name} placement="right-start" key={index}>
                 <Link
                   to={text.path}
                   style={{ color: "black", textDecoration: "none" }}

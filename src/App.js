@@ -18,15 +18,15 @@ function App() {
   return (
     <>
       <Router>
-        {/* <Layout> */}
+         
         <NavBar>
-          <Routes>
+         <Routes>
             <Route path="/" element={<Navigate replace to="/home" />} />
             <Route path="/home" element={<Home />} />
             <Route path="/extension" element={<Extension />} />
             <Route path="/ivr" element={<IVR />} />
-            {/* <Extension /> */}
-          </Routes>
+            
+          </Routes> 
         </NavBar>
         {/* </Layout> */}
       </Router>

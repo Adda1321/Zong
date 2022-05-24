@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -26,6 +26,12 @@ import { Box } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 import { withStyles } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import DeleteExtension from "./ExtensionCall/DltExtension";
+import { Button } from "@mui/material";
+import NewExt from "../Pages/extension/NewExt";
+import { Tooltip } from "@mui/material";
+import EditExtension from "./ExtensionCall/EditExtension";
+// import NewExt from "./NewExt";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -118,15 +124,23 @@ TablePaginationActions.propTypes = {
 
 export default function CustomizedTables(props) {
   console.log("props", props);
-  const { header, rows, search } = props;
+  const { header, rows, search, Error, ext, ivr } = props;
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [searchInput, setSearchInput] = React.useState("");
+  const [DLT, setDLT] = useState("");
+  const [Edit, setEdit] = useState("");
+  const [EditData, setEditData] = useState("");
+  const [open, setOpen] = React.useState(false);
+
   const Theme = createTheme({
     palette: {
       primary: {
         // Purple and green play nicely together.
         main: "#b1d87c",
+      },
+      TextField: {
+        fontSize: "200px",
       },
     },
   });
@@ -146,12 +160,12 @@ export default function CustomizedTables(props) {
     e.preventDefault();
     setSearchInput(e.target.value);
 
-    e.target.value.length === 1 && setPage(0)
+    e.target.value.length === 1 && setPage(0);
     // console.log('testt' ,)
   };
   const filteredData = rows.filter((el) => {
     //if no input the return the original
-    console.log('EL--',el)
+    // console.log("EL--", el);
     if (searchInput === "") {
       return el;
     }
@@ -159,7 +173,7 @@ export default function CustomizedTables(props) {
     else {
       let ID =
         el.first.toLowerCase().substring(0, searchInput.length) === searchInput
-          ? true  
+          ? true
           : false;
       let Nam =
         el.sec.toLowerCase().substring(0, searchInput.length) === searchInput
@@ -169,17 +183,46 @@ export default function CustomizedTables(props) {
       return ID || Nam;
     }
   });
+  const DltHandle = (ChildData) => {
+    ChildData
+      ? alert("Data Deleted Successfully " + ChildData)
+      : alert("Cannot Delete " + ChildData);
+  };
+
+  const EditHandle = (ChildData) => {
+    setEditData(ChildData);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+    // console.log("in extension");
+  };
+  const handleClose = () => {
+    console.log("Ajeeb func");
+    setOpen(false);
+    setEditData('')
+  };
 
   return (
     <ThemeProvider theme={Theme}>
-      <div style={{ margin: "10px 150px", marginTop: 30 }}>
+      {DLT && <DeleteExtension body={DLT} parentDLT={DltHandle} />}
+      {Edit && <EditExtension body={Edit} parentEdit={EditHandle} />}
+
+      {EditData && (
+        // handleOpen(),
+        <NewExt
+          EditData={EditData}
+          ext={true}
+          gate={true}
+          get_state={handleClose}
+        />
+      )}
+
+      <div style={{ margin: "10px 90px 10px 150px", marginTop: 30 }}>
         {search && (
           <div
             style={{
-              display: "flex",
               marginBottom: 5,
-              alignItems: "flex-end",
-              justifyContent: "flex-end",
             }}
           >
             <TextField
@@ -187,7 +230,9 @@ export default function CustomizedTables(props) {
               size="small"
               label="Search"
               variant="outlined"
+              placeholder="Search by Name, Code, Primary Number"
               InputProps={{
+                style: { fontSize: "13px" },
                 startAdornment: (
                   <InputAdornment position="start">
                     <SearchIcon />
@@ -199,92 +244,171 @@ export default function CustomizedTables(props) {
             />
           </div>
         )}
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 700 }} aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                {header.map((val, index) =>
-                  index === 0 ? (
-                    <StyledTableCell>{val}</StyledTableCell>
-                  ) : (
-                    <StyledTableCell align="right">{val}</StyledTableCell>
-                  )
-                )}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {(rowsPerPage > 0
-                ? filteredData.slice(
-                    page * rowsPerPage,
-                    page * rowsPerPage + rowsPerPage
-                  )
-                : filteredData
-              ).map((row) => (
-                // console.log("ROW--", row);
-                <StyledTableRow>
-                  {/* for (const [key, value] of Object.entries(row)) */}
-                  {Object.keys(row).map(
-                    (value) => (
-                      console.log(`firt ${value}`),
-                      value === "first" ? (
-                        <StyledTableCell component="th" scope="row">
-                          {row[value]}
+        <div style={{ display: "flex" }}>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 700 }} aria-label="customized table">
+              {Error ? (
+                <TableBody>
+                  <TableRow>
+                    <td>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          height: 300,
+                        }}
+                      >
+                        <div style={{ fontSize: 30 }}>
+                          'CHECK YOUR INTERNET '
+                        </div>
+                      </div>
+                    </td>
+                  </TableRow>
+                </TableBody>
+              ) : (
+                <>
+                  <TableHead>
+                    <TableRow>
+                      {header.map((val, index) => (
+                        // console.log('Value',val)
+                        <StyledTableCell
+                          key={index}
+                          align={index !== 0 ? "right" : ""}
+                        >
+                          {val}
                         </StyledTableCell>
-                      ) : (
-                        <StyledTableCell align="right">
-                          {row[value]}
-                        </StyledTableCell>
-                      )
-                    )
-                  )}
-                  <StyledTableCell align="right">
-                    <IconButton aria-label="delete">
-                      <EditIcon
-                        color={"primary"}
-                        fontSize={"small"}
-                        onClick={() => alert("Edit")}
-                      />
-                    </IconButton>
-                    <IconButton>
-                      <DeleteIcon
-                        color={"error"}
-                        sx={{ color: "##8dc63" }}
-                        onClick={() => alert("Delete")}
-                        fontSize={"small"}
-                      />
-                    </IconButton>
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
+                      ))}
+                    </TableRow>
+                  </TableHead>
 
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
+                  <TableBody>
+                    {(rowsPerPage > 0
+                      ? filteredData.slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
+                      : filteredData
+                    ).map((row, index) => (
+                      // console.log("ROW---", filteredData),
+                      <StyledTableRow key={index}>
+                        {/* for (const [key, value] of Object.entries(row)) */}
+                        {Object.keys(row).map((value, index) => (
+                          // console.log('ROWS--' , value),
+                          <>
+                            <StyledTableCell
+                              component={value === "first" ? "th" : ""}
+                              scope={value === "first" ? "row" : ""}
+                              align={value !== "first" ? "right" : ""}
+                              key={index}
+                            >
+                              {value === "emp" ? (
+                                <>
+                                  <IconButton
+                                    aria-label="delete"
+                                    onClick={() => {
+                                      var bodyFormData = new FormData();
+                                      bodyFormData.append("id", row[value]);
+                                      setEdit(bodyFormData);
+                                    }}
+                                  >
+                                    <EditIcon
+                                      color={"primary"}
+                                      fontSize={"small"}
+                                      // onClick={() => alert("Edit")}
+                                    />
+                                  </IconButton>
+
+                                  <IconButton
+                                    onClick={() => {
+                                      var bodyFormData = new FormData();
+                                      bodyFormData.append("id", row[value]);
+                                      setDLT(bodyFormData);
+                                    }}
+                                  >
+                                    <DeleteIcon
+                                      color={"error"}
+                                      sx={{ color: "##8dc63" }}
+                                      // onClick={() => alert("Delete")}
+                                      fontSize={"small"}
+                                    />
+                                  </IconButton>
+                                </>
+                              ) : (
+                                row[value]
+                              )}
+                            </StyledTableCell>
+                          </>
+                        ))}
+                      </StyledTableRow>
+                    ))}
+
+                    {emptyRows > 0 && (
+                      <TableRow style={{ height: 53 * emptyRows }}>
+                        <TableCell colSpan={6} />
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </>
               )}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                  colSpan={3}
-                  count={rows.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  SelectProps={{
-                    inputProps: {
-                      "aria-label": "rows per page",
-                    },
-                    native: true,
-                  }}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                  ActionsComponent={TablePaginationActions}
-                />
-              </TableRow>
-            </TableFooter>
-          </Table>
-        </TableContainer>
+              <TableFooter>
+                <TableRow>
+                  <TablePagination
+                    rowsPerPageOptions={[
+                      5,
+                      10,
+                      25,
+                      { label: "All", value: -1 },
+                    ]}
+                    colSpan={3}
+                    count={rows.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    SelectProps={{
+                      inputProps: {
+                        "aria-label": "rows per page",
+                      },
+                      native: true,
+                    }}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    ActionsComponent={TablePaginationActions}
+                  />
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </TableContainer>
+
+          <div
+            style={{
+              display: "flex",
+              // flexDirection:'column',
+              alignItems: "flex-end",
+              justifyContent: "flex-end",
+
+              marginBottom: 10,
+              marginLeft: 50,
+            }}
+          >
+            <Tooltip title="Add new Field">
+              <Button
+                variant="contained"
+                onClick={handleOpen}
+                style={{
+                  display: "block",
+                  height: 60,
+                  width: 40,
+                  borderRadius: "50%",
+                }}
+              >
+                <span style={{ fontSize: 30, color: "#fff" }}>+</span>
+              </Button>
+            </Tooltip>
+            {/* <Button>asd</Button> */}
+          </div>
+        </div>
+        {ext && <NewExt ext={true} gate={open} get_state={handleClose} />}
+        {ivr && <NewExt ivr={true} gate={open} get_state={handleClose} />}
       </div>
     </ThemeProvider>
   );
