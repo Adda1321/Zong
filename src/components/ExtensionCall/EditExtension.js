@@ -15,8 +15,8 @@ function EditExtension({body , parentEdit}) {
 
     ZongPortal.EditExtension(body)
       .then((res) => {
-        console.log("CHOOSE RESPONSE Ext Edit Successfully", res);
-        parentEdit(res.data.dial_list)
+        console.log("CHOOSE RESPONSE Ext Edit Successfully", res.data);
+        parentEdit(res.data)
         // props.parentCallback(res.data.dial_lists);
     
       })

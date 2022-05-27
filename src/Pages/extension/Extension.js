@@ -1,30 +1,30 @@
-import React,{useState} from "react";
+import React, { useState, useEffect } from "react";
 import Table from "../../components/Table";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
+
 import { Divider } from "@mui/material";
 import "../../App.css";
 
 import GetExtension from "../../components/ExtensionCall/GetExtension";
 
+import { addModule } from "../../store/Module";
+
+
+
 function Extension() {
   const [open, setOpen] = React.useState(false);
   const [data, setData] = React.useState([]);
   const [loading, setloading] = React.useState();
-  const [error, setError] = useState('')
+  const [error, setError] = useState("");
 
-  
 
-  function createData(first, sec, thir, forth,emp) {
-    return { first, sec, thir, forth , emp };
+  function createData(first, sec, thir, forth, emp) {
+    return { first, sec, thir, forth, emp };
   }
 
-  const rows = [
-    createData("121c340", "e92334", "0000", "02334244552"),
-   
-  ];
+  const rows = [createData("121c340", "e92334", "0000", "02334244552")];
 
   const header = ["ID", "Name", "Code", "Primary Number", "Action"];
   const handleCallback = (childData) => {
@@ -35,7 +35,7 @@ function Extension() {
           user.List_Name,
           user.ext_code,
           user.Num_1,
-          user.id.toString(),
+          user.id.toString()
         )
       )
     );
@@ -43,14 +43,18 @@ function Extension() {
   const handleLoading = (childData) => {
     setloading(childData);
   };
-  const ErrorHandling = (ChildData)=>{
-    setError(ChildData)
-  }
+  const ErrorHandling = (ChildData) => {
+    setError(ChildData);
+  };
   console.log("loading", loading);
 
   return (
     <div>
-      <GetExtension parentCallback={handleCallback} isLoading={handleLoading} ErrorCallback={ErrorHandling}/>
+      <GetExtension
+        parentCallback={handleCallback}
+        isLoading={handleLoading}
+        ErrorCallback={ErrorHandling}
+      />
       <Typography
         variant="h5"
         // component="div"
@@ -63,10 +67,14 @@ function Extension() {
       // style={{display:'flex' , justifyContent:'space-evenly' , backgroundColor:'red'}}
       >
         {/* {!data ? 'ASD------' :  */}
-        <Table search={true} rows={data} header={header} Error={error} ext={true}/>
+        <Table
+          search={true}
+          rows={data}
+          header={header}
+          Error={error}
+          mode={'ext'}
+        />
         {/* } */}
-
-    
       </div>
 
       {/* here gate is a prop that opens the Modal and get_state closes the modal (it is a callback fucntion) */}

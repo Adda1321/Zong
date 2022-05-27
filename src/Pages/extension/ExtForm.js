@@ -20,8 +20,12 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Stack from "@mui/material/Stack";
+import {Modal_OpenClose} from '../../store/Modal';
+
+import { useDispatch, useSelector } from 'react-redux';
+
 // import { makeStyles } from '@material-ui/core/styles';
-import { pink, red } from '@mui/material/colors';
+import { pink, red } from "@mui/material/colors";
 
 // const useStyles = makeStyles({
 //   flexGrow: {
@@ -38,18 +42,32 @@ import { pink, red } from '@mui/material/colors';
 
 export default function ExtForm(props) {
   const { EditData, parentModal } = props;
+  const EditedData = EditData?.dial_list;
+
+  const [NumArr, setNumArr] = useState([]);
+
+  if (EditedData?.Num_2)
+    for (let i = 0; i < 1; i++) {
+      NumArr[i] = Number(EditedData?.Num_2);
+      NumArr[i + 1] = Number(EditedData?.Num_3);
+      NumArr[i + 2] = Number(EditedData?.Num_4);
+      NumArr[i + 3] = Number(EditedData?.Num_5);
+    }
+    console.log('Arr--' , NumArr)
+
   const [ExtensionShow, setExtensionShow] = React.useState(false);
   const [Data, setData] = useState({});
   const [CallBack, setCallBack] = useState(false);
-  const [SoundFile, setSoundFile] = React.useState("");
+  const [SoundFile, setSoundFile] = React.useState(0);
   const [Error, setError] = useState(null);
   const [Success, setSuccess] = useState(null);
-  const [List, setList] = useState(null);
+  const [List, setList] = useState("");
   const accent = pink.A200;
+  const dispatch = useDispatch();
   // const [errors, setErrors] = useState(null)
 
   // const classes = useStyles()
- console.log('FIELD--> ' , CallBack)
+  console.log("FIELD--> ", CallBack);
 
   const handleChange = (event) => {
     // console.log('SELECT' , event.target)
@@ -103,6 +121,7 @@ export default function ExtForm(props) {
   const handlecallback = (ChildData) => {
     setList(ChildData);
   };
+  console.log("Phone-", List[0]?.phone);
   const onSubmit = ({
     ExtField,
     NameField,
@@ -113,7 +132,6 @@ export default function ExtForm(props) {
     PtoExt,
     PrimaryField,
   }) => {
-    // console.log("Phone " , List[0]?.phone || 0);
     // debugger
     setExtensionShow(true);
     var bodyFormData = new FormData();
@@ -124,7 +142,7 @@ export default function ExtForm(props) {
     bodyFormData.append("callbackdetection", CallbackDetect ? 1 : 0);
     bodyFormData.append("incomingrecording", incRec ? 1 : 0);
     bodyFormData.append("outgoingrecording", outRec ? 1 : 0);
-    bodyFormData.append("sound", SoundFile ? 1 : 0);
+    bodyFormData.append("sound", SoundFile);
     bodyFormData.append("credit_limit", 10);
     bodyFormData.append("Num_2", List[0]?.phone || 0);
     bodyFormData.append("Num_3", List[1]?.phone || 0);
@@ -187,7 +205,7 @@ export default function ExtForm(props) {
                 severity="success"
                 action={
                   <Button
-                    onClick={() => parentModal(false)}
+                    onClick={() => dispatch(Modal_OpenClose(false))}
                     color="inherit"
                     size="small"
                   >
@@ -234,8 +252,7 @@ export default function ExtForm(props) {
                           {...field}
                           label="Text field"
                           // inputRef={field.ref}
-                          defaultValue={EditData?.List_Name
-                          }
+                          defaultValue={EditedData?.List_Name}
                           error={Error?.List_Name ? true : false}
                           helperText={Error?.List_Name?.toString()}
                         />
@@ -266,7 +283,7 @@ export default function ExtForm(props) {
                           {...field}
                           label="Extension field"
                           inputRef={field.ref}
-                          defaultValue={EditData?.ext_code}
+                          defaultValue={EditedData?.ext_code}
                           error={Error?.ext_code ? true : false}
                           helperText={Error?.ext_code?.toString()}
                         />
@@ -283,8 +300,8 @@ export default function ExtForm(props) {
                       <CustomCheckBox
                         name="Incomming Recording"
                         onChange={(e) => field.onChange(e.target.checked)}
-                        check={ field.value}
-                        defaultCk={ Number(EditData?.rec_flag) || field.value }
+                        check={field.value}
+                        defaultCk={Number(EditedData?.rec_flag) || field.value}
                         // inputRef={field.ref}
                       />
                     )}
@@ -299,10 +316,11 @@ export default function ExtForm(props) {
                       <CustomCheckBox
                         name="OutGoing Recording"
                         onChange={(e) => field.onChange(e.target.checked)}
-                        check={ field.value}
-                        defaultCk={ Number(EditData?.outgoing_recording) || field.value }
-                       
-                        
+                        check={field.value}
+                        defaultCk={
+                          Number(EditedData?.outgoing_recording) || field.value
+                        }
+
                         // inputRef={field.ref}
                       />
                     )}
@@ -314,7 +332,7 @@ export default function ExtForm(props) {
                 Dialing List
               </Typography>
               <Divider sx={{ py: 0.5 }} />
-              
+
               <Grid container sx={{ py: 1 }} spacing={2}>
                 <Grid item xs={4}>
                   {/* {console.log('sHOWWW', CallBack)} */}
@@ -326,11 +344,17 @@ export default function ExtForm(props) {
                         name="OutGoing Calls"
                         onChange={(e) => {
                           field.onChange(e.target.checked);
-                          
+                          console.log("tttt", field.value);
                         }}
-                        check={CallBack ? true : field.value }
+                        check={
+                          CallBack || Number(EditedData?.cb_detection)
+                            ? true
+                            : field.value === undefined || field.value === false
+                            ? 0
+                            : 1
+                        }
                         // check={undefined}
-                        // defaultCk={ Number(EditData?.outgoing_call) || field.value }
+                        defaultCk={Number(EditedData?.cb_detection)}
                         // inputRef={field.ref}
                       />
                     )}
@@ -345,8 +369,8 @@ export default function ExtForm(props) {
                       <CustomCheckBox
                         name="portal.Ext to Ext Calls"
                         onChange={(e) => field.onChange(e.target.checked)}
-                        defaultCk={ EditData?.exten_call || field.value }
-                        check={ field.value}
+                        defaultCk={EditedData?.exten_call || field.value}
+                        check={field.value}
                         inputRef={field.ref}
                       />
                     )}
@@ -355,26 +379,39 @@ export default function ExtForm(props) {
 
                 <Grid item xs={4}>
                   <Controller
-
-name="CallbackDetect"
+                    name="CallbackDetect"
                     control={control}
                     render={({ field }) => (
                       <CustomCheckBox
                         name=" Call Back  detection"
                         onChange={(e) => {
                           field.onChange(e.target.checked);
-                          console.log('SHOWW' ,e.target.checked )
+                          console.log("SHOWW", e.target.checked);
                           setCallBack(e.target.checked);
-                          console.log('ttt' , typeof Number (EditData?.cb_detection)  , 'field val ' , field)
+                          console.log(
+                            "ttt",
+                            typeof Number(EditedData?.cb_detection),
+                            "field val ",
+                            field
+                          );
                         }}
-                        check ={Number(EditData?.cb_detection) ? (Number(EditData?.cb_detection)  ): field.value}
+                        check={
+                          Number(EditedData?.cb_detection)
+                            ? Number(EditedData?.cb_detection)
+                            : field.value
+                        }
+                        defaultCk={
+                          Number(EditedData?.cb_detection)
+                            ? Number(EditedData?.cb_detection)
+                            : field.value
+                        }
                         // inputRef={field.ref}
                       />
                     )}
                   />
                 </Grid>
 
-                {CallBack && (
+                {CallBack || Number(EditedData?.cb_detection) ? (
                   <Grid item xs={4}>
                     <Box>
                       <FormControl fullWidth>
@@ -400,7 +437,7 @@ name="CallbackDetect"
                             size="small"
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            value={ SoundFile}
+                            value={EditedData?.List_Length || SoundFile}
                             required
                             // label="Age"
                             onChange={handleChange}
@@ -414,6 +451,8 @@ name="CallbackDetect"
                       </FormControl>
                     </Box>
                   </Grid>
+                ) : (
+                  ""
                 )}
 
                 <Grid item xs={12}>
@@ -439,7 +478,7 @@ name="CallbackDetect"
                           placeholder="Enter Primary Number"
                           Width="true"
                           inputRef={field.ref}
-                          defaultValue={EditData?.Num_1}
+                          defaultValue={EditedData?.Num_1}
                           error={Error?.Num_1 ? true : false}
                           helperText={Error?.Num_1?.toString()}
                         />
@@ -470,6 +509,7 @@ name="CallbackDetect"
                       label="Primary Number"
                       placeholder="Enter Primary Number"
                       Width="true"
+                      arr={NumArr}
                       // inputRef={field.ref}
                     />
                     {/* )} 
@@ -477,25 +517,29 @@ name="CallbackDetect"
                   </div>
                 </Grid>
 
-                {EditData ? (
+                {EditedData ? (
                   <>
-                  <Grid item xs={10} />
+                    <Grid item xs={10} />
 
-                  <Grid item xs={2}>
-                    <Button  type="submit" sx={{ mx: 2 , backgroundColor: ''  }} variant="contained">
-                      UPDATE
-                    </Button>
-                  </Grid>
+                    <Grid item xs={2}>
+                      <Button
+                        type="submit"
+                        sx={{ mx: 2, backgroundColor: "" }}
+                        variant="contained"
+                      >
+                        UPDATE
+                      </Button>
+                    </Grid>
                   </>
                 ) : (
                   <>
-                  <Grid item xs={10} />
-                    
-                  <Grid item xs={2}>
-                    <Button type="submit" variant="contained">
-                      Save
-                    </Button>
-                  </Grid>
+                    <Grid item xs={10} />
+
+                    <Grid item xs={2}>
+                      <Button type="submit" variant="contained">
+                        Save
+                      </Button>
+                    </Grid>
                   </>
                 )}
               </Grid>

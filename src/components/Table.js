@@ -31,6 +31,15 @@ import { Button } from "@mui/material";
 import NewExt from "../Pages/extension/NewExt";
 import { Tooltip } from "@mui/material";
 import EditExtension from "./ExtensionCall/EditExtension";
+
+import {Modal_OpenClose} from '../store/Modal';
+import { addModule } from "../store/Module";
+
+import { useDispatch, useSelector } from 'react-redux';
+import DeleteIVR from "./IVRCall/DltIVR";
+import DeleteQueue from "./QueueCall/DLTQueue";
+
+
 // import NewExt from "./NewExt";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -124,14 +133,37 @@ TablePaginationActions.propTypes = {
 
 export default function CustomizedTables(props) {
   console.log("props", props);
-  const { header, rows, search, Error, ext, ivr } = props;
+  const { header, rows, search, Error, mode} = props;
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [searchInput, setSearchInput] = React.useState("");
   const [DLT, setDLT] = useState("");
   const [Edit, setEdit] = useState("");
   const [EditData, setEditData] = useState("");
-  const [open, setOpen] = React.useState(false);
+  const [EditMode , setEditMode] = useState('');
+  const [DLTMode , setDLTMode] = useState('');
+  // const [open, setOpen] = React.useState(false);
+
+
+
+
+
+  // ----------------------------------- REDUX -------------------------
+
+  // Using useSelector hook we obtain the redux store value
+  // const open = useSelector((state) => state.Modal.open);
+
+  const dispatch = useDispatch();
+  
+  // Using the useDispatch hook to send payload back to redux
+  const HandleModal = () => {dispatch(Modal_OpenClose(true))
+    console.log('HANDLE_MODAL')
+  };
+  
+  // ----------------------------------- REDUX -------------------------
+  
+
+
 
   const Theme = createTheme({
     palette: {
@@ -194,27 +226,32 @@ export default function CustomizedTables(props) {
   };
 
   const handleOpen = () => {
-    setOpen(true);
+    // setOpen(true);
     // console.log("in extension");
   };
   const handleClose = () => {
-    console.log("Ajeeb func");
-    setOpen(false);
+    console.log("Ajeeb func" );
+    // setOpen(false);
     setEditData('')
   };
 
   return (
     <ThemeProvider theme={Theme}>
-      {DLT && <DeleteExtension body={DLT} parentDLT={DltHandle} />}
-      {Edit && <EditExtension body={Edit} parentEdit={EditHandle} />}
+      {DLTMode === 'extDLT' && <DeleteExtension body={DLT} parentDLT={DltHandle} />}
+      {DLTMode === 'ivrDLT' && <DeleteIVR body={DLT} parentDLT={DltHandle} />}
+      {DLTMode === 'queueDLT' && <DeleteQueue body={DLT} parentDLT={DltHandle} />}
+      
+
+      {EditMode === 'extEdit' && <EditExtension body={Edit} parentEdit={EditHandle} />}
 
       {EditData && (
-        // handleOpen(),
+        HandleModal(),
+        // setEditData(''),
         <NewExt
           EditData={EditData}
-          ext={true}
-          gate={true}
-          get_state={handleClose}
+          mode={mode}
+          // gate={true}
+           get_state={handleClose}
         />
       )}
 
@@ -230,7 +267,7 @@ export default function CustomizedTables(props) {
               size="small"
               label="Search"
               variant="outlined"
-              placeholder="Search by Name, Code, Primary Number"
+              placeholder="search"
               InputProps={{
                 style: { fontSize: "13px" },
                 startAdornment: (
@@ -310,6 +347,7 @@ export default function CustomizedTables(props) {
                                       var bodyFormData = new FormData();
                                       bodyFormData.append("id", row[value]);
                                       setEdit(bodyFormData);
+                                      setEditMode(`${mode}Edit`)
                                     }}
                                   >
                                     <EditIcon
@@ -324,6 +362,7 @@ export default function CustomizedTables(props) {
                                       var bodyFormData = new FormData();
                                       bodyFormData.append("id", row[value]);
                                       setDLT(bodyFormData);
+                                      setDLTMode(`${mode}DLT`)
                                     }}
                                   >
                                     <DeleteIcon
@@ -393,7 +432,7 @@ export default function CustomizedTables(props) {
             <Tooltip title="Add new Field">
               <Button
                 variant="contained"
-                onClick={handleOpen}
+                onClick={HandleModal}
                 style={{
                   display: "block",
                   height: 60,
@@ -407,8 +446,10 @@ export default function CustomizedTables(props) {
             {/* <Button>asd</Button> */}
           </div>
         </div>
-        {ext && <NewExt ext={true} gate={open} get_state={handleClose} />}
-        {ivr && <NewExt ivr={true} gate={open} get_state={handleClose} />}
+        {(!EditData & mode === 'ext') && <NewExt mode={mode} 
+        // gate={open} get_state={handleClose} 
+        />}
+        {(!EditData & mode ==='ivr') && <NewExt  mode={mode} />}
       </div>
     </ThemeProvider>
   );

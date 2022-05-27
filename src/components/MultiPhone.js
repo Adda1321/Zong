@@ -2,11 +2,14 @@ import { useState,useEffect } from "react";
 import { TextField, Typography, Button } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import CustomTextField from "./TextField";
-function AddRemoveMultipleInputFields({ parentCallback }) {
+function AddRemoveMultipleInputFields({ parentCallback , NumArr }) {
   const [inputFields, setInputFields] = useState([
+
     {
-      phone: "",
-    },
+      phone: '',
+    }, 
+    
+      
   ]);
 useEffect(() => {
     parentCallback(inputFields);

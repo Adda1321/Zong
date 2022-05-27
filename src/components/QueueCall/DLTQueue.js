@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ZongPortal } from "../../Service/ZongPortal";
 
-function DeleteIVR({body , parentDLT}) {
+function DeleteQueue({body , parentDLT}) {
 //   alert("DLT");
   const [posts, setposts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -13,15 +13,15 @@ function DeleteIVR({body , parentDLT}) {
      
     // alert(body.textField + body.NameField);
 
-    ZongPortal.DeleteIvr(body)
+    ZongPortal.DeleteQueue(body)
       .then((res) => {
-        console.log("CHOOSE  IVr DLT Successfully", res);
+        console.log("CHOOSE RESPONSE Ext DLT Successfully", res);
         parentDLT(res.data.status)
         // props.parentCallback(res.data.dial_lists);
     
       })
       .catch((err) => {
-        console.log("CHOOSE IVR DLT", err); 
+        console.log("CHOOSE Extension DLT", err);
         parentDLT(err.request.withCredentials)
       })
 
@@ -32,4 +32,4 @@ function DeleteIVR({body , parentDLT}) {
   
 }
 
-export default DeleteIVR  ;
+export default DeleteQueue ;

@@ -1,12 +1,16 @@
-import React,{useState} from "react";
+import React,{useState  ,useEffect} from "react";
 import Table from "../../components/Table";
 import { Typography } from "@mui/material";
 import { Divider } from "@mui/material";
 import GetIVR from "../../components/IVRCall/GetIVR";
+import Destination from '../../Destination';
+
 
 function IVR() {
 
-  const [data, setData] = React.useState([]);
+  const [data, setData] = useState([]);
+ 
+ 
 
   function createData(first, sec, thir, forth , emp) {
     return { first, sec, thir, forth,emp };
@@ -47,7 +51,9 @@ function IVR() {
         IVRs
       </Typography>
       <Divider />
-      <Table search={true} rows={data} header={header} ivr={true}/>
+      <Table search={true} rows={data} header={header} mode={'ivr'}/>
+
+      <Destination />
     </div>
   );
 }
