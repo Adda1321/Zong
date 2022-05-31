@@ -11,8 +11,8 @@ import { styled } from "@mui/material/styles";
 import CustomTextField from "../../components/TextField";
 import CustomCheckBox from "../../components/CheckBox";
 import MultiPhone from "../../components/MultiPhone";
-import StoreExtension from "../../components/ExtensionCall/StoreExtension";
-import GetExtension from "../../components/ExtensionCall/GetExtension";
+import StoreExtension from "../../APICalls/ExtensionCall/StoreExtension";
+import GetExtension from "../../APICalls/ExtensionCall/GetExtension";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -20,12 +20,13 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Stack from "@mui/material/Stack";
-import {Modal_OpenClose} from '../../store/Modal';
+import { Modal_OpenClose } from "../../store/Modal";
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 
 // import { makeStyles } from '@material-ui/core/styles';
 import { pink, red } from "@mui/material/colors";
+import UpdateExtension from "../../APICalls/ExtensionCall/UpdateExtension";
 
 // const useStyles = makeStyles({
 //   flexGrow: {
@@ -45,17 +46,25 @@ export default function ExtForm(props) {
   const EditedData = EditData?.dial_list;
 
   const [NumArr, setNumArr] = useState([]);
-
-  if (EditedData?.Num_2)
-    for (let i = 0; i < 1; i++) {
-      NumArr[i] = Number(EditedData?.Num_2);
-      NumArr[i + 1] = Number(EditedData?.Num_3);
-      NumArr[i + 2] = Number(EditedData?.Num_4);
-      NumArr[i + 3] = Number(EditedData?.Num_5);
-    }
-    console.log('Arr--' , NumArr)
+  if (EditedData?.Num_2) {
+    setNumArr((arr) => [
+      ...arr,
+      Number(EditedData?.Num_2),
+      // Number(EditedData?.Num_3),
+      // Number(EditedData?.Num_4),
+      // Number(EditedData?.Num_5),
+    ]);
+  }
+  // if (EditedData?.Num_2) {
+  //   NumArr[0] = Number(EditedData?.Num_2);
+  //   NumArr[1] = Number(EditedData?.Num_3);
+  //   NumArr[2] = Number(EditedData?.Num_4);
+  //   NumArr[3] = Number(EditedData?.Num_5);
+  // }
+  console.log("Arr--", NumArr);
 
   const [ExtensionShow, setExtensionShow] = React.useState(false);
+  const [update, setupdate] = useState(false);
   const [Data, setData] = useState({});
   const [CallBack, setCallBack] = useState(false);
   const [SoundFile, setSoundFile] = React.useState(0);
@@ -114,8 +123,8 @@ export default function ExtForm(props) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      // ExtField: "",
-      // NameField: "",
+      NameField: EditedData?.List_Name,
+      ExtField: EditedData?.ext_code,
     },
   });
   const handlecallback = (ChildData) => {
@@ -133,6 +142,7 @@ export default function ExtForm(props) {
     PrimaryField,
   }) => {
     // debugger
+
     setExtensionShow(true);
     var bodyFormData = new FormData();
     bodyFormData.append("List_Name", NameField);
@@ -150,11 +160,21 @@ export default function ExtForm(props) {
     bodyFormData.append("Num_5", List[3]?.phone || 0);
     bodyFormData.append("onnet_minutes", 10);
     bodyFormData.append("offet_minutes", 10);
-
+    {
+      props.update_id && bodyFormData.append("id", props.update_id);
+    }
+    {
+      for (var key of bodyFormData?.entries()) {
+        console.log("CHOOSE UPDATE BODY", key[0] + ", " + key[1]);
+      }
+      {
+        console.log("CHOOSEEE", NameField);
+      }
+    }
     setData(bodyFormData);
   };
   const succesHandle = (CD) => {
-    console.log("test", CD);
+    // console.log("test", CD);
     setSuccess(CD);
 
     // setSuccess(CD)
@@ -163,7 +183,7 @@ export default function ExtForm(props) {
 
   return (
     <div>
-      {ExtensionShow && (
+      {ExtensionShow & !update && (
         <StoreExtension
           body={Data}
           Success={succesHandle}
@@ -173,6 +193,16 @@ export default function ExtForm(props) {
         />
       )}
 
+      {update && (
+        <UpdateExtension
+          body={Data}
+          Success={succesHandle}
+          Error={(err) => {
+            setError(err);
+          }}
+        />
+        // setUpdate(false)
+      )}
       <Box sx={style}>
         <Box sx={header}>
           <Typography
@@ -205,7 +235,13 @@ export default function ExtForm(props) {
                 severity="success"
                 action={
                   <Button
-                    onClick={() => dispatch(Modal_OpenClose(false))}
+                    onClick={() => {
+                      dispatch(Modal_OpenClose(false));
+                      setExtensionShow(false);
+                      setupdate(false);
+                      // Success('');
+                      // Error('')
+                    }}
                     color="inherit"
                     size="small"
                   >
@@ -296,6 +332,7 @@ export default function ExtForm(props) {
                   <Controller
                     name="incRec"
                     control={control}
+                    defaultValue={Number(EditedData?.rec_flag)}
                     render={({ field }) => (
                       <CustomCheckBox
                         name="Incomming Recording"
@@ -312,6 +349,7 @@ export default function ExtForm(props) {
                   <Controller
                     name="outRec"
                     control={control}
+                    defaultValue={Number(EditedData?.outgoing_recording)}
                     render={({ field }) => (
                       <CustomCheckBox
                         name="OutGoing Recording"
@@ -339,6 +377,7 @@ export default function ExtForm(props) {
                   <Controller
                     name="outCall"
                     control={control}
+                    // defaultValue={Number(EditedData?.cb_detection)}
                     render={({ field }) => (
                       <CustomCheckBox
                         name="OutGoing Calls"
@@ -365,6 +404,7 @@ export default function ExtForm(props) {
                   <Controller
                     name="PtoExt"
                     control={control}
+                    defaultValue={EditedData?.exten_call}
                     render={({ field }) => (
                       <CustomCheckBox
                         name="portal.Ext to Ext Calls"
@@ -381,6 +421,7 @@ export default function ExtForm(props) {
                   <Controller
                     name="CallbackDetect"
                     control={control}
+                    defaultValue={Number(EditedData?.cb_detection)}
                     render={({ field }) => (
                       <CustomCheckBox
                         name=" Call Back  detection"
@@ -470,6 +511,7 @@ export default function ExtForm(props) {
                     <Controller
                       control={control}
                       name="PrimaryField"
+                      defaultValue={EditedData?.Num_1}
                       render={({ field }) => (
                         <CustomTextField
                           size="small"
@@ -526,6 +568,10 @@ export default function ExtForm(props) {
                         type="submit"
                         sx={{ mx: 2, backgroundColor: "" }}
                         variant="contained"
+                        onClick={() => {
+                          setupdate(true);
+                          //  onSubmit();
+                        }}
                       >
                         UPDATE
                       </Button>

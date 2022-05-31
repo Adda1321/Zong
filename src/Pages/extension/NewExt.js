@@ -12,7 +12,7 @@ import ExtForm from "./ExtForm";
 import IVRForm from "../IVR/IVRForm";
 
 export default function NewExt(props) {
-  const { gate, get_state , mode , EditData }=props
+  const { gate, get_state , mode , EditData , update_id}=props
 
 
 
@@ -80,13 +80,14 @@ console.log('OPEN ---> Edit ',EditData)
         <div>
           {mode === 'ext' && <ExtForm 
           // parentModal={closeModal}
-          
+          update_id={update_id}
           EditData={EditData} 
           />
            }
           { mode === 'ivr' && <IVRForm 
           // parentModal={closeModal}
           EditData={EditData} 
+          update_id={update_id}
           /> }
           
           

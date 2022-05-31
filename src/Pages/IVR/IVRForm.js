@@ -11,8 +11,8 @@ import { styled } from "@mui/material/styles";
 import CustomTextField from "../../components/TextField";
 import CustomCheckBox from "../../components/CheckBox";
 import MultiPhone from "../../components/MultiPhone";
-import StoreExtension from "../../components/ExtensionCall/StoreExtension";
-import GetExtension from "../../components/ExtensionCall/GetExtension";
+import StoreExtension from "../../APICalls/ExtensionCall/StoreExtension";
+import GetExtension from "../../APICalls/ExtensionCall/GetExtension";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -24,7 +24,7 @@ import { Modal_OpenClose } from "../../store/Modal";
 import { handleModal } from "../../store/Module";
 import { pink, red } from "@mui/material/colors";
 import { useDispatch, useSelector } from "react-redux";
-import CreateIVR from "../../components/IVRCall/CreateIVR";
+import CreateIVR from "../../APICalls/IVRCall/CreateIVR";
 
 export default function IVRForm(props) {
 

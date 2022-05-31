@@ -1,6 +1,7 @@
 
 import { Box } from "@mui/material";
 function Home() {
+  // alert('H O M E')
   return (
     <h2
       style={{
@@ -19,7 +20,7 @@ function Home() {
     //     fontSize: ,40px",
     //     color: "black",
     //     marginTop:'10px',
-    //     backgroundColor:'pink',
+    //     backgroundColor:'pink',  
     //     flex: 1,
     //     justifyContent: 'center',
     //     lineHeight: '100px'

@@ -1,20 +1,25 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { TextField, Typography, Button } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import CustomTextField from "./TextField";
-function AddRemoveMultipleInputFields({ parentCallback , NumArr }) {
-  const [inputFields, setInputFields] = useState([
+function AddRemoveMultipleInputFields({ parentCallback, NumArr }) {
+  // const functi = () => {
+  //   alert("in function");
 
-    {
-      phone: '',
-    }, 
-    
-      
-  ]);
-useEffect(() => {
-    parentCallback(inputFields);
+  //   NumArr
+  //     ? alert("in function")
+  //     : alert('false')
+  // };
+  const [inputFields, setInputFields] = useState('() => functi()');
+  console.log("Arr++", NumArr);
   
-}, [])
+  
+  useEffect(() => {
+    parentCallback(inputFields);
+  }, []);
+
+
+
 
   const addInputField = () => {
     setInputFields([
@@ -43,13 +48,11 @@ useEffect(() => {
 
   return (
     <div>
-      {/* <div className="row">
-        <div className="col-sm-8"> */}
-      {inputFields.map((data, index) => {
+     
+      {/* {inputFields.map((data, index) => {
         const { phone } = data;
         return (
-          // <Grid container sx={{ py: 1 }} spacing={2}>
-          //   <Grid item xs={12} >
+        
           <>
             <TextField
               //   fullWidth
@@ -62,7 +65,7 @@ useEffect(() => {
               style={{ width: "60%", marginBottom: 5 }}
               placeholder="Phone number"
             />
-            {/* <div className="col"> */}
+            
             {inputFields.length !== 1 ? (
               <Button
                 //   className="btn btn-outline-danger"
@@ -86,12 +89,10 @@ useEffect(() => {
               </Button>
             )}
           </>
-          //   </Grid>
-          //  </Grid>
+         
         );
-      })}
-      {/* </div>
-      </div> */}
+      })} */}
+     
     </div>
   );
 }

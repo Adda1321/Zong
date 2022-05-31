@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import { Divider } from "@mui/material";
 import "../../App.css";
 
-import GetExtension from "../../components/ExtensionCall/GetExtension";
+import GetExtension from "../../APICalls/ExtensionCall/GetExtension";
 
 import { addModule } from "../../store/Module";
 
@@ -19,6 +19,7 @@ function Extension() {
   const [loading, setloading] = React.useState();
   const [error, setError] = useState("");
 
+  // alert('extension CALLED')
 
   function createData(first, sec, thir, forth, emp) {
     return { first, sec, thir, forth, emp };

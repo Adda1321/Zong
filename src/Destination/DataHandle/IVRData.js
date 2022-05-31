@@ -1,8 +1,8 @@
 import { Button, Divider } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import GetExtension from "../../components/ExtensionCall/GetExtension";
+import GetExtension from "../../APICalls/ExtensionCall/GetExtension";
 import { makeStyles, withStyles } from "@mui/styles";
-import GetIVR from "../../components/IVRCall/GetIVR";
+import GetIVR from "../../APICalls/IVRCall/GetIVR";
 
 import {
   addDestinationType,

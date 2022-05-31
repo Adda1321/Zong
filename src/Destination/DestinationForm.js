@@ -5,7 +5,7 @@ import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import { Button, Divider, Typography } from "@mui/material";
 import { makeStyles, withStyles } from "@mui/styles";
-import GetExtension from "../components/ExtensionCall/GetExtension";
+import GetExtension from "../APICalls/ExtensionCall/GetExtension";
 import ExtData from "./DataHandle/ExtData";
 import { objectOf } from "prop-types";
 import IVRData from "./DataHandle/IVRData";

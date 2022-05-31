@@ -1,5 +1,14 @@
 export const BaseURL = 'http://zong-cap.com.pk:94'
 
+
+
+//--------------LOGIN -------------------
+export const GetLogin = '/api/login'
+
+
+//--------------LOGOUT -------------------
+export const Logout = '/api/logout'
+
 // -------------------- Extension ----------------------
 export const ExtensionFetch = '/api/dial-list-fetch'
 export const ExtensionStore ='/api/dial-list-store'

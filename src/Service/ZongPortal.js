@@ -1,5 +1,6 @@
 import {
   BaseURL,
+  GetLogin,
   ExtensionFetch,
   ExtensionStore,
   ExtensionDelete,
@@ -13,18 +14,34 @@ import {
   QueueDelete,
 } from "../Constants";
 import axios from "axios";
-const token = "40|8NbmdhKMp87kxOB1rHDRzHX2jtWjnpahKVnGI7MY";
+
+// const token = "40|8NbmdhKMp87kxOB1rHDRzHX2jtWjnpahKVnGI7MY";
 
 export const ZongPortal = {
+  //---------------------------------------LogIN----------------------------------
+
+  Login: async (body) => {
+    const url = `${BaseURL}${GetLogin}`;
+
+    const config = {
+      headers: { Accept: "application/json" },
+    };
+    return axios.post(url, body, config);
+  },
+
+  // ---------------------------------- Extension --------------------------------
   FetchExtension: async () => {
+    const token = localStorage.getItem("token");
+
     const url = `${BaseURL}${ExtensionFetch}`;
-    // const token= '33|iW59KjBS6nBAF99M3WkoO7hTmIRO3rnNKBda83Nu'
+
     const body = {
       key: "value",
     };
     const config = {
       headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
     };
+    console.log("TOKEN", token);
     return axios.post(url, body, config);
   },
 
@@ -33,6 +50,7 @@ export const ZongPortal = {
     for (var key of body.entries()) {
       console.log("FormData-", key[0] + ", " + key[1]);
     }
+    const token = localStorage.getItem("token");
 
     const config = {
       headers: {
@@ -46,6 +64,7 @@ export const ZongPortal = {
 
   DeleteExtension: async (body) => {
     const url = `${BaseURL}${ExtensionDelete}`;
+    const token = localStorage.getItem("token");
 
     const config = {
       headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
@@ -55,6 +74,7 @@ export const ZongPortal = {
 
   EditExtension: async (body) => {
     const url = `${BaseURL}${ExtensionEdit}`;
+    const token = localStorage.getItem("token");
 
     const config = {
       headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
@@ -63,10 +83,11 @@ export const ZongPortal = {
   },
 
   UpdateExtension: async (body) => {
-    const url = `${BaseURL}${ExtensionStore}`;
+    const url = `${BaseURL}${ExtensionUpdate}`;
     for (var key of body.entries()) {
       console.log("FormData-", key[0] + ", " + key[1]);
     }
+    const token = localStorage.getItem("token");
 
     const config = {
       headers: {
@@ -80,7 +101,8 @@ export const ZongPortal = {
   // ------------------------------- IVR --------------------------------
   FetchIVR: async () => {
     const url = `${BaseURL}${IVRFetch}`;
-    // const token= '33|iW59KjBS6nBAF99M3WkoO7hTmIRO3rnNKBda83Nu'
+    const token = localStorage.getItem("token");
+
     const body = {
       key: "value",
     };
@@ -92,6 +114,7 @@ export const ZongPortal = {
 
   DeleteIvr: async (body) => {
     const url = `${BaseURL}${IVRDelete}`;
+    const token = localStorage.getItem("token");
 
     const config = {
       headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
@@ -100,6 +123,8 @@ export const ZongPortal = {
   },
   CreateIVR: async (body) => {
     const url = `${BaseURL}${IVRCreate}`;
+    const token = localStorage.getItem("token");
+
     // for (var key of body.entries()) {
     //   console.log("FormData-", key[0] + ", " + key[1]);
     // }
@@ -115,6 +140,8 @@ export const ZongPortal = {
   },
   StoreIVR: async (body) => {
     const url = `${BaseURL}${ExtensionStore}`;
+    const token = localStorage.getItem("token");
+
     // for (var key of body.entries()) {
     //   console.log("FormData-", key[0] + ", " + key[1]);
     // }
@@ -129,8 +156,10 @@ export const ZongPortal = {
     return axios.post(url, body, config);
   },
   // ------------------------------- QUEUE --------------------------------
-  FetchQueue: async () => { 
+  FetchQueue: async () => {
     const url = `${BaseURL}${QueueFetch}`;
+    const token = localStorage.getItem("token");
+
     // const token= '33|iW59KjBS6nBAF99M3WkoO7hTmIRO3rnNKBda83Nu'
     const body = {
       key: "value",
@@ -141,8 +170,9 @@ export const ZongPortal = {
     return axios.post(url, body, config);
   },
 
-
   DeleteQueue: async (body) => {
+    const token = localStorage.getItem("token");
+
     const url = `${BaseURL}${QueueDelete}`;
 
     const config = {
@@ -150,10 +180,4 @@ export const ZongPortal = {
     };
     return axios.post(url, body, config);
   },
-
-  
-
 };
-
-
-

@@ -2,7 +2,7 @@ import React,{useState  ,useEffect} from "react";
 import Table from "../../components/Table";
 import { Typography } from "@mui/material";
 import { Divider } from "@mui/material";
-import GetIVR from "../../components/IVRCall/GetIVR";
+import GetIVR from "../../APICalls/IVRCall/GetIVR";
 import Destination from '../../Destination';
 
 

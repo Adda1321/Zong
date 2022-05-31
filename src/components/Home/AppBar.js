@@ -1,6 +1,7 @@
 import * as React from "react";
 import "../../App.css";
 import { styled, useTheme } from "@mui/material/styles";
+import { Outlet, useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
@@ -29,7 +30,7 @@ import CallIcon from "@mui/icons-material/Call";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import VolumeDownIcon from "@mui/icons-material/VolumeDown";
 import QueueIcon from "@mui/icons-material/Queue";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import ForumIcon from "@mui/icons-material/Forum";
@@ -43,8 +44,11 @@ import InputLabel from "@mui/material/InputLabel";
 import FlagIcon from "../FactoryIcon";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-
+import { useDispatch } from "react-redux";
+import { LogoutUser } from "../../store/UserCall";
 import Adda from "../../Adda.PNG";
+
+import { removeToken } from "../../store/UserCall";
 const drawerWidth = 240;
 
 const pages = ["Analytics", "Communication Records", "03248562947"];
@@ -54,7 +58,6 @@ const settings = [
   { name: "Logout", icon: <LogoutOutlinedIcon /> },
 ];
 
- 
 const openedMixin = (theme) => ({
   width: drawerWidth,
   transition: theme.transitions.create("width", {
@@ -122,6 +125,7 @@ const Drawer = styled(MuiDrawer, {
 
 export default function MiniDrawer(props) {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const Theme = createTheme({
     palette: {
@@ -143,21 +147,23 @@ export default function MiniDrawer(props) {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [age, setAge] = React.useState(10);
 
-
+  const dispatch = useDispatch();
   React.useEffect(() => {
-    JSON.parse(window.localStorage.getItem('age'))? setAge(JSON.parse(window.localStorage.getItem('age'))) : setAge(10)
-    window.localStorage.getItem('path') ? setPath((window.localStorage.getItem('path'))) : setPath("/")
-    console.log('path ->' ,  JSON.parse(window.localStorage.getItem('age')))
+    JSON.parse(window.localStorage.getItem("age"))
+      ? setAge(JSON.parse(window.localStorage.getItem("age")))
+      : setAge(10);
+    window.localStorage.getItem("path")
+      ? setPath(window.localStorage.getItem("path"))
+      : setPath("/");
+    console.log("path ->", JSON.parse(window.localStorage.getItem("age")));
     // window.localStorage.clear();
   }, []);
 
   React.useEffect(() => {
-    console.log('path' , age);
-    window.localStorage.setItem('age', age);
-    window.localStorage.setItem('path', path);
-
-  }, [age,path]);
-
+    console.log("path", age);
+    window.localStorage.setItem("age", age);
+    window.localStorage.setItem("path", path);
+  }, [age, path]);
 
   const handleChange = (event) => {
     setAge(event.target.value);
@@ -176,6 +182,12 @@ export default function MiniDrawer(props) {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+    dispatch(LogoutUser());
+    // localStorage.removeItem("token");
+    navigate("/login", { replace: true });
+    // window.history.length = 0;
+    // window.history.push("/login")
+    // window.history.back(-1)
   };
 
   const handleDrawerOpen = () => {
@@ -236,7 +248,7 @@ export default function MiniDrawer(props) {
               noWrap
               sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}
             >
-              {pages.map((page,index) => (
+              {pages.map((page, index) => (
                 <React.Fragment key={index}>
                   <Button
                     className=" btn btn-start"
@@ -252,7 +264,7 @@ export default function MiniDrawer(props) {
                   >
                     {page}
                   </Button>
-                  </React.Fragment >
+                </React.Fragment>
               ))}
             </Box>
             <Box>
@@ -275,7 +287,7 @@ export default function MiniDrawer(props) {
                   }}
                 >
                   <MenuItem value={10}>
-                    <FlagIcon code={"cn"} size={"lg"}  />
+                    <FlagIcon code={"cn"} size={"lg"} />
                     <span style={{ marginLeft: 5 }}>Chinese</span>
                   </MenuItem>
                   <MenuItem value={20}>
@@ -335,9 +347,7 @@ export default function MiniDrawer(props) {
             } `}
           >
             <Link to="/" style={{ color: "black", textDecoration: "none" }}>
-              <span
-                onClick={() => ( setOpen(false), samplefunc("/"))}
-              >
+              <span onClick={() => (setOpen(false), samplefunc("/"))}>
                 <img
                   style={
                     open
@@ -435,7 +445,7 @@ export default function MiniDrawer(props) {
         </Drawer>
 
         <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: 5 }}>
-          {props.children}
+          <Outlet />
         </Box>
       </Box>
     </ThemeProvider>
