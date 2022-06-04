@@ -2,17 +2,20 @@ import React from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 
-export default function CustomTextField({
+
+
+const  CustomTextField =  React.forwardRef(({
   placeholder,
   Width,
   size,
   defaultValue,
   label,
-//   name,
+  inputRef,
+  //   name,
   id,
   ...field
-}) {
-  console.log('FIELD-' , defaultValue)
+}, ref) =>   {
+  // console.log("FIELD-", defaultValue);
   return (
     <Box
       component="form"
@@ -27,15 +30,17 @@ export default function CustomTextField({
           required
           {...field}
           size={size}
-        //   name={name}
+          //   name={name}
           id={id}
-          defaultValue={defaultValue}
+          // defaultValue={defaultValue}
           placeholder={placeholder}
           label={label}
           InputLabelProps={{ shrink: true }}
-        //   inputRef={}
+          inputRef={ref}
         />
       </div>
     </Box>
   );
-}
+})
+
+export default  CustomTextField;

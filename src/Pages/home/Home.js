@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 function Home() {
   // alert('H O M E')
   return (
-    <h2
+    <div
       style={{
         marginTop: 220,
         backgroundColor: "rgba(141,198,63,0.8)",
@@ -14,20 +14,8 @@ function Home() {
       }}
     >
       <h3 style={{ color: "#FF1493" }}> WELCOME TO HOME PAGE</h3>
-    </h2>
-    // <div
-    //   style={{
-    //     fontSize: ,40px",
-    //     color: "black",
-    //     marginTop:'10px',
-    //     backgroundColor:'pink',  
-    //     flex: 1,
-    //     justifyContent: 'center',
-    //     lineHeight: '100px'
-    //   }}
-    // >
-    //   IT IS A HOME PAGE
-    // </div>
+    </div>
+    
   );
 }
 

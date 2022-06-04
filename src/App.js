@@ -17,7 +17,16 @@ import IVR from "./Pages/IVR/Ivr";
 import Queue from "./Pages/Queue/Queue";
 import Login from "./Pages/LoginPage/Login";
 import { useSelector } from "react-redux";
-
+import LandingPage from "./Pages/LoginPage/LandingPage";
+import SystemSound from "./Pages/SystemSound/SystemSound";
+import MOHClass from "./Pages/MOHClass/MOHClass";
+import VoiceMail from "./Pages/VoiceMail/VoiceMail";
+import Announcement from "./Pages/Announcement/Announcement";
+import Analytics from "./Analytics";
+import CommunicationRecords from "./CommunicationRecords";
+import TimingCondition from "./Pages/TimingConditions/TimingCondition";
+import Call from "./Pages/Call/Call";
+import CallMessage from "./Pages/CallMessages/CallMessages";
 function App() {
   // const [token, setToken] = React.useState('');
   // alert('R O U T E')
@@ -31,9 +40,8 @@ function App() {
   return (
     <>
       <Router>
-       
         <Routes>
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<LandingPage />} />
           <Route
             path="/"
             element={
@@ -46,7 +54,18 @@ function App() {
               <Route path="/extension" element={<Extension />} />
               <Route path="/ivr" element={<IVR />} />
               <Route path="/queue" element={<Queue />} />
+              <Route path="/SystSound" element={<SystemSound />} />
+              <Route path="/MOHClass" element={<MOHClass />} />
+              <Route path="/Vmail" element={<VoiceMail />} />
+              <Route path="/announcement" element={<Announcement />} />
+              <Route path="/analytic" element={<Analytics />} />
+              <Route path="/commRecord" element={<CommunicationRecords />} />
+              <Route path="/TimingCondition" element={<TimingCondition />} />
+              <Route path="/call" element={<Call />} />
+              <Route path="/messages" element={<CallMessage/>} />
               
+              
+
             </Route>
           </Route>
         </Routes>

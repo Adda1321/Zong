@@ -11,15 +11,18 @@ export const getUser = createAsyncThunk(
         headers: { Accept: "application/json" },
       };
 
-      const { data } = await axios.post(
+      const res = await axios.post(
         `${BaseURL}${GetLogin}`,
         body.bodyFormData,
         config
       );
-      body.navigate("/home", { replace: true });
-      return data;
+
+      console.log("RES", res);
+
+      //   body.navigate("/home", { replace: true });
+      return res.data;
     } catch (error) {
-      rejectWithValue(error.response);
+      return rejectWithValue(error.response);
     }
   }
 );
@@ -39,10 +42,10 @@ export const LogoutUser = createAsyncThunk(
       };
 
       const { data } = await axios.post(`${BaseURL}${Logout}`, body, config);
-      //   body.navigate("/home", { replace: true });
+        body.navigate("/home", { replace: true });
       return data;
     } catch (error) {
-      rejectWithValue(error.response);
+       rejectWithValue(error.response);
     }
   }
 );
@@ -66,6 +69,7 @@ const UserSlice = createSlice({
       state.data = payload;
       state.isSuccess = true;
       state.isLoggedIn = payload.token;
+      state.message = "";
       localStorage.setItem("token", payload.token);
     },
     [getUser.rejected]: (state, { payload }) => {
@@ -80,7 +84,7 @@ const UserSlice = createSlice({
     [LogoutUser.fulfilled]: (state, { payload }) => {
       state.loading = false;
       state.data = [];
-      state.isSuccess = true;
+      // state.isSuccess = true;
       state.message = payload.message;
       //   state.isLoggedIn = payload.token;
       localStorage.removeItem("token");

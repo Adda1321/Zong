@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "../App.css";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -39,7 +40,10 @@ import { useDispatch, useSelector } from "react-redux";
 import DeleteIVR from "../APICalls/IVRCall/DltIVR";
 import DeleteQueue from "../APICalls/QueueCall/DLTQueue";
 import { SecurityUpdate } from "@mui/icons-material";
-
+import DeleteSystemSound from "../APICalls/SystemSoundCall/DLTSystemSound";
+import DeleteMOHClass from "../APICalls/MOHCLassCall/DLTMOHClass";
+import ReactAudioPlayer from "react-audio-player";
+import { BaseURL } from "../Constants";
 // import NewExt from "./NewExt";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -130,9 +134,9 @@ TablePaginationActions.propTypes = {
   page: PropTypes.number.isRequired,
   rowsPerPage: PropTypes.number.isRequired,
 };
-
+var a;
 export default function CustomizedTables(props) {
-  console.log("props", props);
+  // console.log("props", props);
   const { header, rows, search, Error, mode } = props;
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -143,6 +147,8 @@ export default function CustomizedTables(props) {
   const [EditMode, setEditMode] = useState("");
   const [DLTMode, setDLTMode] = useState("");
   const [update, setUpdate] = useState("");
+  const [buttonName, setButtonName] = useState("Play");
+
   // const [open, setOpen] = React.useState(false);
 
   // ----------------------------------- REDUX -------------------------
@@ -158,6 +164,19 @@ export default function CustomizedTables(props) {
     console.log("HANDLE_MODAL");
   };
 
+  // useEffect(() => {
+  //   if (a) {
+  //     a.pause();
+  //     a = null;
+  //     setButtonName("Play");
+  //   }
+  //   if (audio) {
+  //     a = new Audio(audio);
+  //     a.onended = () => {
+  //       setButtonName("Play");
+  //     };
+  //   }
+  // }, [audio]);
   // ----------------------------------- REDUX -------------------------
 
   const Theme = createTheme({
@@ -239,6 +258,13 @@ export default function CustomizedTables(props) {
       {DLTMode === "queueDLT" && (
         <DeleteQueue body={DLT} parentDLT={DltHandle} />
       )}
+      {DLTMode === "SystSoundDLT" && (
+        <DeleteSystemSound body={DLT} parentDLT={DltHandle} />
+      )}
+
+      {DLTMode === "mohClassDLT" && (
+        <DeleteMOHClass body={DLT} parentDLT={DltHandle} />
+      )}
 
       {EditMode === "extEdit" && (
         <EditExtension body={Edit} parentEdit={EditHandle} />
@@ -256,7 +282,7 @@ export default function CustomizedTables(props) {
           />
         ))}
 
-      <div style={{ margin: "10px 90px 10px 150px", marginTop: 30 }}>
+      <div style={{ margin: "10px 50px 0px 200px", marginTop: 30 }}>
         {search && (
           <div
             style={{
@@ -312,7 +338,7 @@ export default function CustomizedTables(props) {
                         // console.log('Value',val)
                         <StyledTableCell
                           key={index}
-                          align={index !== 0 ? "right" : ""}
+                          align={index !== 0 ? "right" : "left"}
                         >
                           {val}
                         </StyledTableCell>
@@ -328,36 +354,38 @@ export default function CustomizedTables(props) {
                         )
                       : filteredData
                     ).map((row, index) => (
-                      // console.log("ROW---", filteredData),
+                      // console.log("INDEX---", index),
                       <StyledTableRow key={index}>
                         {/* for (const [key, value] of Object.entries(row)) */}
                         {Object.keys(row).map((value, index) => (
-                          // console.log('ROWS--' , value),
-                          <>
+                          // console.log("INDEX---", index),
+                          //NOT A UNIQUE INDEX
+                          <React.Fragment>
                             <StyledTableCell
                               component={value === "first" ? "th" : ""}
                               scope={value === "first" ? "row" : ""}
-                              align={value !== "first" ? "right" : ""}
-                              key={index}
+                              align={value !== "first" ? "right" : "left"}
+                              // key={row[value]}
                             >
                               {value === "emp" ? (
                                 <>
-                                  <IconButton
-                                    // aria-label="delete"
-                                    onClick={() => {
-                                      var bodyFormData = new FormData();
-                                      bodyFormData.append("id", row[value]);
-                                      setEdit(bodyFormData);
-                                      setUpdate(row[value]);
-                                      setEditMode(`${mode}Edit`);
-                                    }}
-                                  >
-                                    <EditIcon
-                                      color={"primary"}
-                                      fontSize={"small"}
-                                 
-                                    />
-                                  </IconButton>
+                                  {!props.editt && (
+                                    <IconButton
+                                      // aria-label="delete"
+                                      onClick={() => {
+                                        var bodyFormData = new FormData();
+                                        bodyFormData.append("id", row[value]);
+                                        setEdit(bodyFormData);
+                                        setUpdate(row[value]);
+                                        setEditMode(`${mode}Edit`);
+                                      }}
+                                    >
+                                      <EditIcon
+                                        color={"primary"}
+                                        fontSize={"small"}
+                                      />
+                                    </IconButton>
+                                  )}
 
                                   <IconButton
                                     onClick={() => {
@@ -375,11 +403,20 @@ export default function CustomizedTables(props) {
                                     />
                                   </IconButton>
                                 </>
+                              ) : String(row[value])?.includes(".wav") ? (
+                                <div>
+                                  <ReactAudioPlayer
+                                    className="audioStyle"
+                                    src={`${BaseURL}/${row[value]}`}
+                                    // autoPlay
+                                    controls
+                                  />
+                                </div>
                               ) : (
                                 row[value]
                               )}
                             </StyledTableCell>
-                          </>
+                          </React.Fragment>
                         ))}
                       </StyledTableRow>
                     ))}
@@ -401,7 +438,7 @@ export default function CustomizedTables(props) {
                       25,
                       { label: "All", value: -1 },
                     ]}
-                    colSpan={3}
+                    colSpan={props.pagination}
                     count={rows.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
@@ -448,13 +485,14 @@ export default function CustomizedTables(props) {
             {/* <Button>asd</Button> */}
           </div>
         </div>
-        {!EditData & (mode === "ext") && (
-          <NewExt
-            mode={mode}
-            // gate={open} get_state={handleClose}
-          />
-        )}
-        {!EditData & (mode === "ivr") && <NewExt mode={mode} />}
+
+        {!EditData & (mode === "ext") ? <NewExt mode={mode} /> : ""}
+
+        {!EditData & (mode === "ivr") ? <NewExt mode={mode} /> : ""}
+        {!EditData & (mode === "queue") ? <NewExt mode={mode} /> : ""}
+        {!EditData & (mode === "SystSound") ? <NewExt mode={mode} /> : ""}
+        {!EditData & (mode === "mohClass") ? <NewExt mode={mode} /> : ""}
+        {!EditData & (mode === "announcement") ? <NewExt mode={mode} /> : ""}
       </div>
     </ThemeProvider>
   );

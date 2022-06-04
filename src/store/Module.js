@@ -4,6 +4,7 @@ const initialState = {
   Destination_id :'',
   Destination: false,
   Destination_type :'',
+  selected:'false',
 };
 
 const Dest_Reducers = createSlice({
@@ -21,10 +22,13 @@ const Dest_Reducers = createSlice({
     addDestinationID : (state, { payload }) => {
       state.Destination_id = payload;
     },
+    selectDestination : (state, { payload }) => {
+      state.selected = payload;
+    },
   },
 });
 
 // Action creators for each reducer method
-export const { handleModal , addDestinationType , addDestinationID } = Dest_Reducers.actions;
+export const { handleModal , addDestinationType ,selectDestination, addDestinationID } = Dest_Reducers.actions;
 
 export default Dest_Reducers.reducer;

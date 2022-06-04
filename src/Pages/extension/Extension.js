@@ -59,7 +59,7 @@ function Extension() {
       <Typography
         variant="h5"
         // component="div"
-        sx={{ ml: 3, mt: 4, color: "#4a4a4a", fontWeight: 500 }}
+        sx={{ ml: 3, mt: 2, color: "#4a4a4a", fontWeight: 500 }}
       >
         Extension
       </Typography>
@@ -74,6 +74,7 @@ function Extension() {
           header={header}
           Error={error}
           mode={'ext'}
+          pagination={3}
         />
         {/* } */}
       </div>

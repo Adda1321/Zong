@@ -1,44 +1,45 @@
-import React,{useState , useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import {Modal_OpenClose} from '../../store/Modal';
+import { Modal_OpenClose } from "../../store/Modal";
 
-import { useDispatch, useSelector } from 'react-redux';
-
+import { useDispatch, useSelector } from "react-redux";
 
 import Modal from "@mui/material/Modal";
 import ExtForm from "./ExtForm";
 import IVRForm from "../IVR/IVRForm";
+import QueueForm from "../Queue/QueueForm";
+import SystemSoundForm from "../SystemSound/SystemSoundForm";
+import MOHClassForm from "../MOHClass/MOHClassForm";
+import AnnouncementForm from "../Announcement/AnnouncementForm";
 
 export default function NewExt(props) {
-  const { gate, get_state , mode , EditData , update_id}=props
+  const { gate, get_state, mode, EditData, update_id } = props;
 
-
-
-  const getOpen = useSelector((state ) => state.Modal.open)
+  const getOpen = useSelector((state) => state.Modal.open);
   // const [open, setOpen] = React.useState(getOpen);
 
   // ----------------------------------- REDUX -------------------------
 
-//   useEffect(() => {
-//   setOpen( getOpen )
-   
-// }, [getOpen])
+  //   useEffect(() => {
+  //   setOpen( getOpen )
 
+  // }, [getOpen])
 
   // Using useSelector hook we obtain the redux store value
-console.log('OPEN',getOpen)
-console.log('OPEN ---> Edit ',EditData)
+  // console.log('OPEN',getOpen)
+  // console.log('OPEN ---> Edit ',EditData)
 
   const dispatch = useDispatch();
-  
+
   // Using the useDispatch hook to send payload back to redux
   const HandleModal = () => {
-    dispatch(Modal_OpenClose(false)) 
+    dispatch(Modal_OpenClose(false));
     // console.log( 'get_state'  ,   )
-   {get_state && get_state('')}
-     
+    {
+      get_state && get_state("");
+    }
   };
 
   // ----------------------------------- REDUX -------------------------
@@ -50,7 +51,6 @@ console.log('OPEN ---> Edit ',EditData)
 
   const handleClose = () => {
     // setOpen(false);
-   
     // get_state();
   };
   const style = {
@@ -63,11 +63,6 @@ console.log('OPEN ---> Edit ',EditData)
     boxShadow: 24,
     // p: 0.5,
   };
-  // const closeModal = (childData)=>{
-  //   setOpen(childData);
-  //   handleClose();
-  //   // EditData=null
-  // }
   return (
     <div>
       <Modal
@@ -76,23 +71,54 @@ console.log('OPEN ---> Edit ',EditData)
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        
         <div>
-          {mode === 'ext' && <ExtForm 
-          // parentModal={closeModal}
-          update_id={update_id}
-          EditData={EditData} 
-          />
-           }
-          { mode === 'ivr' && <IVRForm 
-          // parentModal={closeModal}
-          EditData={EditData} 
-          update_id={update_id}
-          /> }
-          
-          
+          {mode === "ext" && (
+            <ExtForm
+              // parentModal={closeModal}
+              update_id={update_id}
+              EditData={EditData}
+            />
+          )}
+          {mode === "ivr" && (
+            <IVRForm
+              // parentModal={closeModal}
+              EditData={EditData}
+              update_id={update_id}
+            />
+          )}
+
+          {mode === "queue" && (
+            <QueueForm
+              // parentModal={closeModal}
+              EditData={EditData}
+              update_id={update_id}
+            />
+          )}
+
+          {mode === "SystSound" && (
+            <SystemSoundForm
+              // parentModal={closeModal}
+              EditData={EditData}
+              update_id={update_id}
+            />
+          )}
+
+          {mode === "mohClass" && (
+            <MOHClassForm
+              // parentModal={closeModal}
+              EditData={EditData}
+              update_id={update_id}
+            />
+          )}
+
+          {mode === "announcement" && (
+            <AnnouncementForm
+              // parentModal={closeModal}
+              EditData={EditData}
+              update_id={update_id}
+            />
+          )}
         </div>
-        
       </Modal>
     </div>
   );

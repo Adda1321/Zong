@@ -15,13 +15,13 @@ function DeleteQueue({body , parentDLT}) {
 
     ZongPortal.DeleteQueue(body)
       .then((res) => {
-        console.log("CHOOSE RESPONSE Ext DLT Successfully", res);
+        console.log("CHOOSE RESPONSE QUEUE DLT Successfully", res);
         parentDLT(res.data.status)
         // props.parentCallback(res.data.dial_lists);
     
       })
       .catch((err) => {
-        console.log("CHOOSE Extension DLT", err);
+        console.log("CHOOSE QUEUE DLT", err);
         parentDLT(err.request.withCredentials)
       })
 

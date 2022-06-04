@@ -11,13 +11,17 @@ export default function Login({ setToken }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const Success = useSelector((state=> state.Login.isSuccess))
-// const Error = useSelector((state=> state.Login.message))
+const Error = useSelector((state=> state.Login.message))
+Success && navigate("/home", { replace: true });
   const handleSubmit = async (e) => {
     e.preventDefault();
     var bodyFormData = new FormData();
     bodyFormData.append("user_name", username);
     bodyFormData.append("password", password);
-    dispatch(getUser({ bodyFormData, navigate }));
+    dispatch(getUser({ bodyFormData}));
+    
+    
+     
   };
   const LoginWrapper = {
     display: "flex",
@@ -31,9 +35,9 @@ export default function Login({ setToken }) {
         <label>
           <p>Username</p>
           <input type="text" onChange={(e) => setUserName(e.target.value)} />
-          {/* <div style={{color:'red' , fontSize:10}}>
+          <div style={{color:'red' , fontSize:10}}>
           {Error && Error}
-          </div> */}
+          </div>
         </label>
         <label>
           <p>Password</p>
@@ -41,9 +45,9 @@ export default function Login({ setToken }) {
             type="password"
             onChange={(e) => setPassword(e.target.value)}
           />
-          {/* <div style={{color:'red' , fontSize:10}}>
+          <div style={{color:'red' , fontSize:10}}>
           {Error && Error}
-          </div> */}
+          </div>
         </label>
         <div>
           <button type="submit">Submit</button>

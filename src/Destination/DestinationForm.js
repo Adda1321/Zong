@@ -9,7 +9,8 @@ import GetExtension from "../APICalls/ExtensionCall/GetExtension";
 import ExtData from "./DataHandle/ExtData";
 import { objectOf } from "prop-types";
 import IVRData from "./DataHandle/IVRData";
-
+import { useSelector } from "react-redux";
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -60,8 +61,11 @@ const StyledButton = withStyles({
 })(Button);
 
 export default function DestinationForm() {
-  const [component, setComponent] = useState({
-    name: "Extensions List",
+  const Dest_ID = useSelector((state) => state.Dest.Destination_id);
+  const Dest_Type = useSelector((state) => state.Dest.Destination_type);
+  
+  const [component, setComponent] = useState( {
+    name: Dest_Type ||  "Extensions List",  //This check is for opening Destination if it is selected by type
     val: "DialList",
   });
 
@@ -102,6 +106,7 @@ export default function DestinationForm() {
           >
             {Obj_List.map((name, key) => {
               return (
+                <>
                 <Grid  item xs={12} sx={{ py: 1 }} key={key}>
                   <StyledButton
                     className={component.name === name.name ? classes.button : ""}
@@ -111,6 +116,7 @@ export default function DestinationForm() {
                     {name.name}
                   </StyledButton>
                 </Grid>
+                </>
               );
             })}
           </Paper>

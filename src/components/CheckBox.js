@@ -19,7 +19,7 @@ console.log('check--' , name , ':', check)
       <Checkbox
         checked={check}
         onChange={onChange}
-        defaultChecked={defaultCk}
+        // defaultChecked={defaultCk}
         inputProps={{ "aria-label": "controlled" }}
       />
     </Box>

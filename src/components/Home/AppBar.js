@@ -46,12 +46,13 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { useDispatch } from "react-redux";
 import { LogoutUser } from "../../store/UserCall";
+
 import Adda from "../../Adda.PNG";
 
 import { removeToken } from "../../store/UserCall";
 const drawerWidth = 240;
 
-const pages = ["Analytics", "Communication Records", "03248562947"];
+const pages = [{name : "Analytics" , path:'analytic'}, {name: "Communication Records" , path:'commRecord'}, {name:"03248562947" , path:''}];
 const settings = [
   { name: "Edit Profile", icon: <ManageAccountsIcon /> },
   { name: "Upload Logo", icon: <FileUploadOutlinedIcon /> },
@@ -125,7 +126,7 @@ const Drawer = styled(MuiDrawer, {
 
 export default function MiniDrawer(props) {
   const theme = useTheme();
-  const navigate = useNavigate();
+  
 
   const Theme = createTheme({
     palette: {
@@ -146,7 +147,7 @@ export default function MiniDrawer(props) {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [age, setAge] = React.useState(10);
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   React.useEffect(() => {
     JSON.parse(window.localStorage.getItem("age"))
@@ -183,7 +184,7 @@ export default function MiniDrawer(props) {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
     dispatch(LogoutUser());
-    // localStorage.removeItem("token");
+    localStorage.removeItem("token");
     navigate("/login", { replace: true });
     // window.history.length = 0;
     // window.history.push("/login")
@@ -215,7 +216,7 @@ export default function MiniDrawer(props) {
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
 
-        <AppBar position="fixed" open={open} color={"primary"}>
+        <AppBar position="fixed" open={open} color={"primary"} sx={{}}>
           <Toolbar>
             {open ? (
               <IconButton onClick={handleDrawerClose} sx={{ ml: -2 }}>
@@ -250,10 +251,14 @@ export default function MiniDrawer(props) {
             >
               {pages.map((page, index) => (
                 <React.Fragment key={index}>
+                   <Link
+                  to={page.path  }
+                  style={{ color: "black", textDecoration: "none" }}
+                >
                   <Button
                     className=" btn btn-start"
                     key={page}
-                    onClick={handleCloseNavMenu}
+                    // onClick={()=>navigate('/')}
                     sx={{
                       mx: 0.5,
                       color: "white",
@@ -262,8 +267,9 @@ export default function MiniDrawer(props) {
                       backgroundColor: "",
                     }}
                   >
-                    {page}
+                    {page.name}
                   </Button>
+                  </Link>
                 </React.Fragment>
               ))}
             </Box>
@@ -382,7 +388,7 @@ export default function MiniDrawer(props) {
               {
                 name: "System Sounds",
                 icon: <VolumeDownIcon />,
-                path: "systemsounds",
+                path: "SystSound",
               },
               {
                 name: "MOH Classes",
@@ -397,7 +403,7 @@ export default function MiniDrawer(props) {
               {
                 name: "Timing Conditions",
                 icon: <CalendarTodayIcon />,
-                path: "Timing",
+                path: "TimingCondition",
               },
               { name: "Voice Mail", icon: <HeadphonesIcon />, path: "Vmail" },
               { name: "Call Messages", icon: <ForumIcon />, path: "messages" },

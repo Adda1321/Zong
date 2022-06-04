@@ -2,14 +2,16 @@ import { Button, Divider } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import GetExtension from "../../APICalls/ExtensionCall/GetExtension";
 import { makeStyles, withStyles } from "@mui/styles";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
 import {
-    addDestinationType,
-    addDestinationID,
-    handleModal,
-  } from "../../store/Module";
-  
-  import { useDispatch, useSelector } from "react-redux";
+  addDestinationType,
+  addDestinationID,
+  handleModal,
+  selectDestination,
+} from "../../store/Module";
+
+import { useDispatch, useSelector } from "react-redux";
 
 const StyledButton = withStyles({
   root: {
@@ -24,7 +26,9 @@ const StyledButton = withStyles({
 
 function ExtData(props) {
   const [data, setData] = useState();
-const dispatch=useDispatch();
+  const dispatch = useDispatch();
+  const Dest_Type = useSelector((state) => state.Dest.Destination_type);
+  const Dest_ID = useSelector((state) => state.Dest.Destination_id);
   useEffect(() => {
     // alert("DATA");
   }, []);
@@ -45,32 +49,52 @@ const dispatch=useDispatch();
       {data ? (
         <div>
           {data?.map((val, key) => (
-            <React.Fragment key={key}>
-              <div style={{ marginLeft: 15, marginTop: 7, marginBottom: 7 }}>
-                <StyledButton
-                  sx={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "flex-start",
-                    alignItems: "center",
-                  }}
-                  onClick={() => {
-                    dispatch(addDestinationType(props.Modle_Name));
-                    dispatch(addDestinationID(val.id));
-                    dispatch(handleModal(false));
-                  }}
-                >
-                  <div style={{ height: 40 }}>
-                    <div>
-                      <span> {val.List_Name} </span>
-                      <span style={{ marginLeft: 7 }}>({val.ext_code})</span>
+            // <React.Fragment key={key}>
+            <div>
+              <div
+                style={{
+                  marginLeft: 15,
+                  marginTop: 7,
+                  marginBottom: 7,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  // alignItems: "center",
+                }}
+              >
+                
+                  <StyledButton
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "flex-start",
+                      // alignItems: "center",
+                      backgroundColor:Dest_ID == val.id ? 'lightgray' : ''
+                    }}
+                    onClick={() => {
+                      dispatch(addDestinationType(props.Modle_Name));
+                      dispatch(addDestinationID(val.id));
+                      dispatch(handleModal(false));
+                      // dispatch(selectDestination(true));
+                    }}
+                  >
+                    <div style={{ height: 40 }}>
+                      <div>
+                        <span> {val.List_Name} </span>
+                        <span style={{ marginLeft: 7 }}>({val.id})</span>
+                      </div>
+                      <div>{val.Num_1}</div>
                     </div>
-                    <div>{val.Num_1}</div>
+                  </StyledButton>
+                
+                {Dest_ID == val.id && (
+                  <div style={{ alignContent: "center", marginTop: 10, marginRight:10 }}>
+                    <CheckCircleOutlineIcon fontSize="large" color="success" />
                   </div>
-                </StyledButton>
+                )}
               </div>
               <Divider />
-            </React.Fragment>
+            </div>
+            // {/* </React.Fragment> */}
           ))}
         </div>
       ) : (
@@ -83,7 +107,7 @@ const dispatch=useDispatch();
           }}
         >
           {" "}
-          NO INTERNET ....{" "}
+          Loading ....{" "}
         </div>
       )}
     </div>

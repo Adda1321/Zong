@@ -51,7 +51,7 @@ function IVR() {
         IVRs
       </Typography>
       <Divider />
-      <Table search={true} rows={data} header={header} mode={'ivr'}/>
+      <Table search={true} rows={data} header={header} pagination={3} mode={'ivr'}/>
 
       <Destination />
     </div>

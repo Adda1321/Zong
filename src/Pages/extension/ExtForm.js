@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { Divider, TextField } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
 import CustomTextField from "../../components/TextField";
 import CustomCheckBox from "../../components/CheckBox";
-import MultiPhone from "../../components/MultiPhone";
+// import MultiPhone from "../../components/MultiPhone";
 import StoreExtension from "../../APICalls/ExtensionCall/StoreExtension";
 import GetExtension from "../../APICalls/ExtensionCall/GetExtension";
 import InputLabel from "@mui/material/InputLabel";
@@ -46,42 +46,72 @@ export default function ExtForm(props) {
   const EditedData = EditData?.dial_list;
 
   const [NumArr, setNumArr] = useState([]);
+ 
   if (EditedData?.Num_2) {
-    setNumArr((arr) => [
-      ...arr,
-      Number(EditedData?.Num_2),
-      // Number(EditedData?.Num_3),
-      // Number(EditedData?.Num_4),
-      // Number(EditedData?.Num_5),
-    ]);
+    NumArr[0] = Number(EditedData?.Num_2);
+    NumArr[1] = Number(EditedData?.Num_3);
+    NumArr[2] = Number(EditedData?.Num_4);
+    NumArr[3] = Number(EditedData?.Num_5);
   }
-  // if (EditedData?.Num_2) {
-  //   NumArr[0] = Number(EditedData?.Num_2);
-  //   NumArr[1] = Number(EditedData?.Num_3);
-  //   NumArr[2] = Number(EditedData?.Num_4);
-  //   NumArr[3] = Number(EditedData?.Num_5);
-  // }
-  console.log("Arr--", NumArr);
+  // console.log("Arr--", NumArr);
 
   const [ExtensionShow, setExtensionShow] = React.useState(false);
   const [update, setupdate] = useState(false);
   const [Data, setData] = useState({});
   const [CallBack, setCallBack] = useState(false);
-  const [SoundFile, setSoundFile] = React.useState(0);
+  // const [SoundFile, setSoundFile] = React.useState(
+  //   EditedData?.List_Length || 0
+  // );
   const [Error, setError] = useState(null);
   const [Success, setSuccess] = useState(null);
   const [List, setList] = useState("");
   const accent = pink.A200;
   const dispatch = useDispatch();
+  const [inPutFieldCount, setinPutFieldCount] = useState(0);
   // const [errors, setErrors] = useState(null)
 
-  // const classes = useStyles()
-  console.log("FIELD--> ", CallBack);
-
-  const handleChange = (event) => {
-    // console.log('SELECT' , event.target)
-    setSoundFile(event.target.value);
-  };
+  const { handleSubmit, control, register } = useForm({
+    defaultValues: {
+      NameField: EditedData ? EditedData?.List_Name : "",
+      ExtField: EditedData ? EditedData?.ext_code : "",
+      incRec: EditedData ? Boolean(Number(EditedData?.rec_flag)) : false,
+      outRec: EditedData
+        ? Boolean(Number(EditedData?.outgoing_recording))
+        : false,
+      outCall: EditedData ? Boolean(Number(EditedData?.cb_detection)) : false,
+      PtoExt: EditData ? Boolean(EditedData?.exten_call) : false,
+      CallbackDetect: EditedData
+        ? Boolean(Number(EditedData?.cb_detection))
+        : false,
+      PrimaryField: EditedData ? EditedData?.Num_1 : "",
+      PhoneMulti: EditedData
+        ? [
+            { value: EditedData?.Num_2 },
+            { value: EditedData?.Num_3 },
+            { value: EditedData?.Num_4 },
+            { value: EditedData?.Num_5 },
+          ]
+        : "",
+        SoundFile: EditedData?.List_Length || 1
+    },
+  });
+  console.log("PRimary Daata",  EditData);
+  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
+    {
+      control, // control props comes from useForm (optional: if you are using FormContext)
+      name: "PhoneMulti", // unique name for your Field Array
+    }
+  ); 
+  useEffect(
+    () =>
+      !EditData
+        ? (append({}), setinPutFieldCount((prevcount) => prevcount + 1))
+        : setinPutFieldCount(
+            (prevcount) =>
+              prevcount + Number(fields.filter((x) => x.value !== null).length)
+          ),
+    []
+  );
 
   const style = {
     position: "absolute",
@@ -116,17 +146,6 @@ export default function ExtForm(props) {
     py: 0.51,
   };
 
-  const {
-    handleSubmit,
-    control,
-
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      NameField: EditedData?.List_Name,
-      ExtField: EditedData?.ext_code,
-    },
-  });
   const handlecallback = (ChildData) => {
     setList(ChildData);
   };
@@ -138,11 +157,13 @@ export default function ExtForm(props) {
     CallbackDetect,
     outRec,
     outCall,
+    SoundFile,
     PtoExt,
     PrimaryField,
+    PhoneMulti,
   }) => {
     // debugger
-
+    console.log("PRimary Daata", EditedData?.List_Length);
     setExtensionShow(true);
     var bodyFormData = new FormData();
     bodyFormData.append("List_Name", NameField);
@@ -152,32 +173,22 @@ export default function ExtForm(props) {
     bodyFormData.append("callbackdetection", CallbackDetect ? 1 : 0);
     bodyFormData.append("incomingrecording", incRec ? 1 : 0);
     bodyFormData.append("outgoingrecording", outRec ? 1 : 0);
-    bodyFormData.append("sound", SoundFile);
+    bodyFormData.append("sound",SoundFile);
     bodyFormData.append("credit_limit", 10);
-    bodyFormData.append("Num_2", List[0]?.phone || 0);
-    bodyFormData.append("Num_3", List[1]?.phone || 0);
-    bodyFormData.append("Num_4", List[2]?.phone || 0);
-    bodyFormData.append("Num_5", List[3]?.phone || 0);
+    bodyFormData.append("Num_2", PhoneMulti[0]?.value || 0);
+    bodyFormData.append("Num_3", PhoneMulti[1]?.value || 0);
+    bodyFormData.append("Num_4", PhoneMulti[2]?.value || 0);
+    bodyFormData.append("Num_5", PhoneMulti[3]?.value || 0);
     bodyFormData.append("onnet_minutes", 10);
     bodyFormData.append("offet_minutes", 10);
     {
       props.update_id && bodyFormData.append("id", props.update_id);
     }
-    {
-      for (var key of bodyFormData?.entries()) {
-        console.log("CHOOSE UPDATE BODY", key[0] + ", " + key[1]);
-      }
-      {
-        console.log("CHOOSEEE", NameField);
-      }
-    }
+
     setData(bodyFormData);
   };
   const succesHandle = (CD) => {
-    // console.log("test", CD);
     setSuccess(CD);
-
-    // setSuccess(CD)
   };
   // console.log("SHOW", Error);
 
@@ -287,7 +298,7 @@ export default function ExtForm(props) {
                           id="NameField"
                           {...field}
                           label="Text field"
-                          // inputRef={field.ref}
+                          inputRef={field.ref}
                           defaultValue={EditedData?.List_Name}
                           error={Error?.List_Name ? true : false}
                           helperText={Error?.List_Name?.toString()}
@@ -296,7 +307,6 @@ export default function ExtForm(props) {
                     />
                   </div>
                 </Grid>
-
                 <Grid item xs={6}>
                   <div
                     style={{
@@ -332,7 +342,7 @@ export default function ExtForm(props) {
                   <Controller
                     name="incRec"
                     control={control}
-                    defaultValue={Number(EditedData?.rec_flag)}
+                    // defaultValue={Number(EditedData?.rec_flag)}
                     render={({ field }) => (
                       <CustomCheckBox
                         name="Incomming Recording"
@@ -349,7 +359,7 @@ export default function ExtForm(props) {
                   <Controller
                     name="outRec"
                     control={control}
-                    defaultValue={Number(EditedData?.outgoing_recording)}
+                    // defaultValue={Number(EditedData?.outgoing_recording)}
                     render={({ field }) => (
                       <CustomCheckBox
                         name="OutGoing Recording"
@@ -373,7 +383,6 @@ export default function ExtForm(props) {
 
               <Grid container sx={{ py: 1 }} spacing={2}>
                 <Grid item xs={4}>
-                  {/* {console.log('sHOWWW', CallBack)} */}
                   <Controller
                     name="outCall"
                     control={control}
@@ -383,16 +392,17 @@ export default function ExtForm(props) {
                         name="OutGoing Calls"
                         onChange={(e) => {
                           field.onChange(e.target.checked);
-                          console.log("tttt", field.value);
+
+                          // console.log("tttt", field.value);
                         }}
                         check={
-                          CallBack || Number(EditedData?.cb_detection)
+                          CallBack || Boolean(Number(EditedData?.cb_detection))
                             ? true
                             : field.value === undefined || field.value === false
-                            ? 0
-                            : 1
+                            ? false
+                            : true
                         }
-                        // check={undefined}
+                        // check={field.value}
                         defaultCk={Number(EditedData?.cb_detection)}
                         // inputRef={field.ref}
                       />
@@ -404,12 +414,14 @@ export default function ExtForm(props) {
                   <Controller
                     name="PtoExt"
                     control={control}
-                    defaultValue={EditedData?.exten_call}
+                    // defaultValue={EditedData?.exten_call}
                     render={({ field }) => (
                       <CustomCheckBox
                         name="portal.Ext to Ext Calls"
                         onChange={(e) => field.onChange(e.target.checked)}
-                        defaultCk={EditedData?.exten_call || field.value}
+                        defaultCk={
+                          Boolean(EditedData?.exten_call) || field.value
+                        }
                         check={field.value}
                         inputRef={field.ref}
                       />
@@ -421,31 +433,30 @@ export default function ExtForm(props) {
                   <Controller
                     name="CallbackDetect"
                     control={control}
-                    defaultValue={Number(EditedData?.cb_detection)}
+                    // defaultValue={Number(EditedData?.cb_detection)}
                     render={({ field }) => (
                       <CustomCheckBox
                         name=" Call Back  detection"
                         onChange={(e) => {
                           field.onChange(e.target.checked);
-                          console.log("SHOWW", e.target.checked);
+                          // console.log("SHOWW", e.target.checked);
                           setCallBack(e.target.checked);
-                          console.log(
-                            "ttt",
-                            typeof Number(EditedData?.cb_detection),
-                            "field val ",
-                            field
-                          );
+                          // console.log(
+                          //   "ttt",
+                          //   typeof Number(EditedData?.cb_detection),
+                          //   "field val ",
+                          //   field
+                          // );
                         }}
                         check={
-                          Number(EditedData?.cb_detection)
-                            ? Number(EditedData?.cb_detection)
-                            : field.value
+                          Boolean(Number(EditedData?.cb_detection)) ||
+                          field.value
                         }
-                        defaultCk={
-                          Number(EditedData?.cb_detection)
-                            ? Number(EditedData?.cb_detection)
-                            : field.value
-                        }
+                        // defaultCk={
+                        //   Number(EditedData?.cb_detection)
+                        //     ? Number(EditedData?.cb_detection)
+                        //     : field.value
+                        // }
                         // inputRef={field.ref}
                       />
                     )}
@@ -455,41 +466,47 @@ export default function ExtForm(props) {
                 {CallBack || Number(EditedData?.cb_detection) ? (
                   <Grid item xs={4}>
                     <Box>
-                      <FormControl fullWidth>
-                        {/* <InputLabel id="demo-simple-select-label">
-                          Sound Files
-                        </InputLabel> */}
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "flex-start",
-                            alignItems: "center",
-                          }}
+                      {/* <FormControl fullWidth> */}
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-start",
+                          alignItems: "center",
+                        }}
+                      >
+                        <label
+                          // sx={{ marginRight: 120 }}
+                          htmlFor="PrimaryField"
                         >
-                          <label
-                            // sx={{ marginRight: 120 }}
-                            htmlFor="PrimaryField"
-                          >
-                            Sound Files
-                          </label>
-                          <Select
-                            // sx={{marginLeft: 20}}
-                            fullWidth
-                            size="small"
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={EditedData?.List_Length || SoundFile}
-                            required
-                            // label="Age"
-                            onChange={handleChange}
-                          >
-                            {/* <MenuItem value={0}>-</MenuItem> */}
-                            <MenuItem value={1}>callback</MenuItem>
-                            <MenuItem value={2}>callbackTesting</MenuItem>
-                            <MenuItem value={3}>call back</MenuItem>
-                          </Select>
-                        </div>
-                      </FormControl>
+                          Sound Files
+                        </label>
+                        <Controller
+                          name="SoundFile"
+                          control={control}
+                          // defaultValue={Number(EditedData?.rec_flag)}
+                          render={({ field }) => (
+                            <Select
+                              
+                              fullWidth
+                              size="small"
+                              labelId="demo-simple-select-label"
+                              id="demo-simple-select"
+                              required
+                              value={field.value}
+                              // label="Age"
+
+                              defaultValue=""
+                              onChange={(e) => field.onChange(e.target.checked)}
+                            >
+                              <MenuItem value={0}>-</MenuItem>
+                              <MenuItem value={1}>callback</MenuItem>
+                              <MenuItem value={2}>callbackTesting</MenuItem>
+                              <MenuItem value={3}>call back</MenuItem>
+                            </Select>
+                          )}
+                        />
+                      </div>
+                      {/* </FormControl> */}
                     </Box>
                   </Grid>
                 ) : (
@@ -511,7 +528,7 @@ export default function ExtForm(props) {
                     <Controller
                       control={control}
                       name="PrimaryField"
-                      defaultValue={EditedData?.Num_1}
+                      // defaultValue={EditedData?.Num_1}
                       render={({ field }) => (
                         <CustomTextField
                           size="small"
@@ -542,20 +559,63 @@ export default function ExtForm(props) {
                     </span>
                     {/* <Controller
                       control={control}
-                      name="PrimaryField"
+                      name="MultiPhone"
                       render={({ ...field }) => (  */}
-                    <MultiPhone
-                      parentCallback={handlecallback}
-                      size="small"
-                      // {...field}
-                      label="Primary Number"
-                      placeholder="Enter Primary Number"
-                      Width="true"
-                      arr={NumArr}
-                      // inputRef={field.ref}
-                    />
+                    {fields.map(({ id, name, type, amount }, index) => {
+                      return (
+                        <div key={id}>
+                          {fields[index].value !== null && (
+                            <>
+                              {console.log("WHAT FIELD", fields[index].value)}
+                              <TextField
+                                {...register(`PhoneMulti.${index}.value`)}
+                                size="small"
+                                type="number"
+                                style={{ width: "60%", marginBottom: 5 }}
+                                placeholder="Phone number"
+                                error={Error ? true : false}
+                                helperText={
+                                  Error?.Num_2 && Error?.Num_2?.toString()
+                                }
+                              />
+                              <Button
+                                //   className="btn btn-outline-danger"
+                                sx={{ ml: 1.5 }}
+                                variant="contained"
+                                onClick={() => (
+                                  remove(index),
+                                  setinPutFieldCount(
+                                    (prevcount) => prevcount - 1
+                                  )
+                                )}
+                              >
+                                Remove
+                              </Button>
+                            </>
+                          )}
+                        </div>
+                      );
+                    })}
+
+                    {/* <input type="submit" /> */}
+                    {inPutFieldCount < 4 &&
+                      (console.log("INPUTT", inPutFieldCount),
+                      (
+                        <Button
+                          // className="btn btn-outline-success "
+                          sx={{ ml: 1.5 }}
+                          variant="contained"
+                          onClick={() => (
+                            append({}),
+                            setinPutFieldCount((prevcount) => prevcount + 1)
+                          )}
+                        >
+                          ADD NEW
+                        </Button>
+                      ))}
+
                     {/* )} 
-                    /> */}
+                    />  */}
                   </div>
                 </Grid>
 

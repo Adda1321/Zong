@@ -1,25 +1,43 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { TextField, Typography, Button } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import CustomTextField from "./TextField";
-function AddRemoveMultipleInputFields({ parentCallback, NumArr }) {
-  // const functi = () => {
-  //   alert("in function");
+import { DateRangePickerDay } from "@mui/lab";
+function AddRemoveMultipleInputFields({ parentCallback, NumArr , Error }) {
+  // NumArr = [1 , 2 , 3 , 4 ...]
 
-  //   NumArr
-  //     ? alert("in function")
-  //     : alert('false')
-  // };
-  const [inputFields, setInputFields] = useState('() => functi()');
-  console.log("Arr++", NumArr);
-  
-  
+  // let fields = {
+  //   phone :''
+  // }
+
+  //  fields = NumArr.map((val) => {
+
+  // return ( val )
+
+  // });
+
+  const func = () => {
+    var arr = [];
+    var obj = { phone: "" };
+
+    NumArr.map((val, key) => {
+      obj.phone = val;
+      arr.push(JSON.parse(JSON.stringify(obj)));
+    });
+    return arr;
+  };
+
+  const otherFunc = () => {
+    const obj = [{ phone: "" }];
+    return obj;
+  };
+  const [inputFields, setInputFields] = useState(
+    NumArr.length > 0  ?  () => func() :  () => otherFunc() 
+  );
+
   useEffect(() => {
     parentCallback(inputFields);
   }, []);
-
-
-
 
   const addInputField = () => {
     setInputFields([
@@ -48,12 +66,14 @@ function AddRemoveMultipleInputFields({ parentCallback, NumArr }) {
 
   return (
     <div>
-     
-      {/* {inputFields.map((data, index) => {
+      {/* <div className="row">
+        <div className="col-sm-8"> */}
+      {inputFields?.map((data, index) => {
         const { phone } = data;
         return (
-        
-          <>
+          // <Grid container sx={{ py: 1 }} spacing={2}>
+          //   <Grid item xs={12} >
+          <React.Fragment key={index} >
             <TextField
               //   fullWidth
               size="small"
@@ -64,9 +84,16 @@ function AddRemoveMultipleInputFields({ parentCallback, NumArr }) {
               className="form-control"
               style={{ width: "60%", marginBottom: 5 }}
               placeholder="Phone number"
+              error={Error  ? true : false}
+              helperText={
+              
+                Error?.Num_2 && Error?.Num_2?.toString()
+              
+              }
+
             />
-            
-            {inputFields.length !== 1 ? (
+            {/* <div className="col"> */}
+            {inputFields?.length !== 1 ? (
               <Button
                 //   className="btn btn-outline-danger"
                 sx={{ ml: 1.5 }}
@@ -78,7 +105,7 @@ function AddRemoveMultipleInputFields({ parentCallback, NumArr }) {
             ) : (
               ""
             )}
-            {inputFields.length - 1 === index && inputFields.length < 4 && (
+            {inputFields?.length - 1 === index && inputFields?.length < 4 && (
               <Button
                 // className="btn btn-outline-success "
                 sx={{ ml: 1.5 }}
@@ -88,11 +115,13 @@ function AddRemoveMultipleInputFields({ parentCallback, NumArr }) {
                 Add New
               </Button>
             )}
-          </>
-         
+          </React.Fragment>
+          //   </Grid>
+          //  </Grid>
         );
-      })} */}
-     
+      })}
+      {/* </div>
+      </div> */}
     </div>
   );
 }

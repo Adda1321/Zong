@@ -47,7 +47,7 @@ function Queue() {
     Queue
       </Typography>
       <Divider />
-      <Table search={true} rows={data} header={header} mode={'queue'}/>
+      <Table search={true} rows={data} header={header} pagination={3} mode={'queue'}/>
     </div>
   );
 }
