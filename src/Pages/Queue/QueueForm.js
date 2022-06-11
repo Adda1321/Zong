@@ -3,6 +3,10 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import ListItemText from "@mui/material/ListItemText";
+
+import Checkbox from "@mui/material/Checkbox";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { Divider, TextField } from "@mui/material";
 import Paper from "@mui/material/Paper";
@@ -35,6 +39,17 @@ import { resetWarningCache } from "prop-types";
 import CreateQueue from "../../APICalls/QueueCall/CreateQueue";
 import StoreQueue from "../../APICalls/QueueCall/StoreQueue";
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
 export default function QueueForm(props) {
   const Dest_Type = useSelector((state) => state.Dest.Destination_type);
   const Dest_ID = useSelector((state) => state.Dest.Destination_id);
@@ -50,14 +65,14 @@ export default function QueueForm(props) {
 
   const [InputLength, setInputLength] = React.useState(0); //InputLength Select
   const [InputTimeout, setInputTimeout] = React.useState(0); //InputTimeout Select
-
+  const [agent, setAgent] = useState([]); // To set Agents
+  const [agentName, setAgentName] = React.useState([]); // For Agents MUI Multi Select
   const [Error, setError] = useState(null);
   const [Success, setSuccess] = useState(null);
   const [CreateData, setCreateData] = useState([]); //For Ring Plan
   const [MOH, setMOH] = useState([]); //For MOH
   const [openForm, setOpenForm] = useState(false);
   // const [OpenDest, setOpenDest] = useState(false);
-
   //STATES to store related data of API RESPONSE
   const [Syst_SO, setSSO] = useState(null);
   const [Input_TO, setITO] = useState(null);
@@ -105,18 +120,31 @@ export default function QueueForm(props) {
     py: 0.51,
   };
 
-  const onSubmit = ({
-    QueueName,
-    RingPlan,
-    onHold,
-    Members
-  }) => {
-    setExtensionShow(true);
+  const handleChange = (event) => {
+    console.log("EVENT", event.target.value);
+    const {
+      target: { value },
+    } = event;
+    setAgentName(
+      // On autofill we get a stringified value.
+      // typeof value === "string" ? value.split(",") : value
+      event.target.value
+    );
+  };
+
+  const onSubmit = ({ QueueName, RingPlan, onHold }) => {
+    // setExtensionShow(true);
     var bodyFormData = new FormData();
 
-    // bodyFormData.append("time_destination_id", Dest_ID);
-
-   
+    // bodyFormData.append("queue_name", QueueName);
+    // bodyFormData.append("strategy", RingPlan);
+    // bodyFormData.append("musiconhold_id", onHold);
+    // bodyFormData.append("members", agentName);
+    
+    console.log("queue_name", QueueName);
+    console.log("strategy", RingPlan);
+    console.log("musiconhold_id", onHold);
+    console.log("members", agentName);
 
     // setData(bodyFormData);
   };
@@ -138,12 +166,21 @@ export default function QueueForm(props) {
   const handleDataGet = (CD) => {
     setCreateData(CD);
   };
-  const handleMOH = (CD)=>{
-      setMOH(CD)
-  }
+  const handleMOH = (CD) => {
+    setMOH(CD);
+  };
+  const handleAgents = (CD) => {
+    setAgent(CD);
+  };
   return (
     <div>
-      {openForm && <CreateQueue DataToShow={handleDataGet} DataMOH={handleMOH} />}
+      {openForm && (
+        <CreateQueue
+          DataToShow={handleDataGet}
+          DataMOH={handleMOH}
+          DataAgent={handleAgents}
+        />
+      )}
 
       {ExtensionShow && (
         <StoreQueue
@@ -260,8 +297,7 @@ export default function QueueForm(props) {
                           value={field.value}
                           // defaultValue=""
                           onChange={(e) => field.onChange(e.target.value)}
-                          >
-                            
+                        >
                           {Object.keys(CreateData)?.map((val, key) => (
                             <MenuItem value={val}>{CreateData[val]}</MenuItem>
                           ))}
@@ -291,8 +327,9 @@ export default function QueueForm(props) {
                         >
                           {MOH?.map((val, key) => (
                             <MenuItem key={key} value={val?.id}>
-                              {val?.name}
-                                {/* // has to check from the PostMAN about val.name adn val.id */}
+                              {val?.file_Name}
+                              {/* {console.log("Queue MOH name", val)} */}
+                              {/* // has to check from the PostMAN about val.name adn val.id */}
                             </MenuItem>
                           ))}
                         </Select>
@@ -320,25 +357,25 @@ export default function QueueForm(props) {
                       Queue Name
                     </label>
 
-                    <Controller
-                      control={control}
-                      name="Members"
-                      // defaultValue=""
+                    <Select
+                      labelId="demo-multiple-checkbox-label"
+                      id="demo-multiple-checkbox"
+                      multiple
+                      value={agentName}
+                      onChange={handleChange}
+                      // name={}
+                      input={<OutlinedInput label="Tag" />}
+                      
+                      MenuProps={MenuProps}
+                    >
+                      {agent?.map((name, index) => (
+                        // console.log("Agent Name", name)
 
-                      render={({ field }) => (
-                        <CustomTextField
-                          // name="namefield"
-                          size="small"
-                          id="Members"
-                          {...field}
-                          label="Text field"
-                          inputRef={field.ref}
-                          //   defaultValue={EditedData?.List_Name}
-                          //   error={Error?.List_Name ? true : false}
-                          //   helperText={Error?.List_Name?.toString()}
-                        />
-                      )}
-                    />
+                        <MenuItem key={index} value={name.id}>
+                          <ListItemText primary={name.user_name} />
+                        </MenuItem>
+                      ))}
+                    </Select>
                   </div>
                 </Grid>
 

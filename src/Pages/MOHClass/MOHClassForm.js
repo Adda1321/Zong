@@ -21,6 +21,7 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Stack from "@mui/material/Stack";
 import { Modal_OpenClose } from "../../store/Modal";
+import { isReloading } from "../../store/Reload";
 import {
   handleModal,
   selectDestination,
@@ -36,7 +37,9 @@ import CreateQueue from "../../APICalls/QueueCall/CreateQueue";
 import StoreQueue from "../../APICalls/QueueCall/StoreQueue";
 import StoreMOHClass from "../../APICalls/MOHCLassCall/StoreMOHClass";
 
+import { useNavigate } from "react-router-dom";
 export default function MOHClassForm(props) {
+  const mode = 'mohClass'
   const Dest_Type = useSelector((state) => state.Dest.Destination_type);
   const Dest_ID = useSelector((state) => state.Dest.Destination_id);
   const DestinationSelected = useSelector(
@@ -48,7 +51,6 @@ export default function MOHClassForm(props) {
   const [ExtensionShow, setExtensionShow] = React.useState(false);
   const [Data, setData] = useState({});
   const [useTime, setuseTime] = useState(false);
-
   const [InputLength, setInputLength] = React.useState(0); //InputLength Select
   const [InputTimeout, setInputTimeout] = React.useState(0); //InputTimeout Select
 
@@ -66,7 +68,7 @@ export default function MOHClassForm(props) {
 
   const accent = pink.A200;
   const dispatch = useDispatch();
-
+const navigate = useNavigate();
   const {
     handleSubmit,
     control,
@@ -104,12 +106,13 @@ export default function MOHClassForm(props) {
   };
 
   const onSubmit = ({ MOHName }) => {
+    // console.log('Extension SHow',ExtensionShow)
     setExtensionShow(true);
     var bodyFormData = new FormData();
 
     bodyFormData.append("name", MOHName);
 
-    // setData(bodyFormData);
+    setData(bodyFormData);
   };
   const succesHandle = (CD) => {
     setSuccess(CD);
@@ -132,6 +135,7 @@ export default function MOHClassForm(props) {
   const handleMOH = (CD) => {
     setMOH(CD);
   };
+  // console.log('ExtensionShow',ExtensionShow)
   return (
     <div>
       {ExtensionShow && (
@@ -143,7 +147,10 @@ export default function MOHClassForm(props) {
             setError(err);
           }}
         />
-      )}
+        )
+      }
+      {/* {ExtensionShow && alert(ExtensionShow)} */}
+      
 
       <Box sx={style}>
         <Box sx={header}>
@@ -177,7 +184,7 @@ export default function MOHClassForm(props) {
                 severity="success"
                 action={
                   <Button
-                    onClick={() => dispatch(Modal_OpenClose(false))}
+                    onClick={() =>( dispatch(Modal_OpenClose(false)),dispatch(isReloading(`Success`)))}
                     color="inherit"
                     size="small"
                   >
@@ -189,6 +196,7 @@ export default function MOHClassForm(props) {
                 <strong> {Success?.message}</strong>
               </Alert>
             </Stack>
+            
           </>
         )}
         <Box>
@@ -225,8 +233,8 @@ export default function MOHClassForm(props) {
                           label="MOH Name"
                           inputRef={field.ref}
                           //   defaultValue={EditedData?.List_Name}
-                          //   error={Error?.List_Name ? true : false}
-                          //   helperText={Error?.List_Name?.toString()}
+                            error={Error?.name ? true : false}
+                            helperText={Error?.name?.toString()}
                         />
                       )}
                     />

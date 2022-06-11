@@ -44,6 +44,9 @@ import DeleteSystemSound from "../APICalls/SystemSoundCall/DLTSystemSound";
 import DeleteMOHClass from "../APICalls/MOHCLassCall/DLTMOHClass";
 import ReactAudioPlayer from "react-audio-player";
 import { BaseURL } from "../Constants";
+import DeleteTimeCondition from "../APICalls/TimeCondition/DeleteTimrCondition";
+import EditTimeCondition from "../APICalls/TimeCondition/EditTimeCondition";
+import { isReloading } from "../store/Reload";
 // import NewExt from "./NewExt";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -161,6 +164,7 @@ export default function CustomizedTables(props) {
   // Using the useDispatch hook to send payload back to redux
   const HandleModal = () => {
     dispatch(Modal_OpenClose(true));
+    dispatch(isReloading(""));
     console.log("HANDLE_MODAL");
   };
 
@@ -244,11 +248,11 @@ export default function CustomizedTables(props) {
     // console.log("in extension");
   };
   const handleClose = () => {
-    console.log("Ajeeb func");
+    // console.log("Ajeeb func");
     // setOpen(false);
     setEditData("");
   };
-
+console.log('DATA OF TABLE', rows)
   return (
     <ThemeProvider theme={Theme}>
       {DLTMode === "extDLT" && (
@@ -266,8 +270,16 @@ export default function CustomizedTables(props) {
         <DeleteMOHClass body={DLT} parentDLT={DltHandle} />
       )}
 
+      {DLTMode === "timingConditionDLT" && (
+        <DeleteTimeCondition body={DLT} parentDLT={DltHandle} />
+      )}
+
       {EditMode === "extEdit" && (
         <EditExtension body={Edit} parentEdit={EditHandle} />
+      )}
+
+      {EditMode === "timingConditionEdit" && (
+        <EditTimeCondition body={Edit} parentEdit={EditHandle} />
       )}
 
       {EditData &&
@@ -403,7 +415,7 @@ export default function CustomizedTables(props) {
                                     />
                                   </IconButton>
                                 </>
-                              ) : String(row[value])?.includes(".wav") ? (
+                              ) : String(row[value])?.includes(".wav") || String(row[value])?.includes(".gsm")  ? (
                                 <div>
                                   <ReactAudioPlayer
                                     className="audioStyle"
@@ -412,8 +424,14 @@ export default function CustomizedTables(props) {
                                     controls
                                   />
                                 </div>
+                              ) : typeof row[value] == "object" ? (
+                                // console.log("TYPE DIKHAO",  row[value]);
+                                row[value].map(
+                                  (val, index) =>
+                                    `${val.membername} number: ${val.member_number}`
+                                )
                               ) : (
-                                row[value]
+                                typeof row[value] == "string" && row[value]
                               )}
                             </StyledTableCell>
                           </React.Fragment>
@@ -493,6 +511,8 @@ export default function CustomizedTables(props) {
         {!EditData & (mode === "SystSound") ? <NewExt mode={mode} /> : ""}
         {!EditData & (mode === "mohClass") ? <NewExt mode={mode} /> : ""}
         {!EditData & (mode === "announcement") ? <NewExt mode={mode} /> : ""}
+        {!EditData & (mode === "timingCondition") ? <NewExt mode={mode} /> : ""}
+        {!EditData & (mode === "OutGoing") ? <NewExt mode={mode} /> : ""}
       </div>
     </ThemeProvider>
   );

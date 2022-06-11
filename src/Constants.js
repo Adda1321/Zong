@@ -66,3 +66,17 @@ export const searchOutGoingCalls ='/api/search-outgoing-calls'
 // ----------------------- Call Settings ----------------------------
 export const CallSettingFetch ='/api/call-settings-fetch'
 export const CallSettingStore ='/api/call-settings-store'
+
+
+// ------------------------- Timing Conditions -------------
+export const timingConditionFetch ='/api/time-conditions-fetch'
+export const timingConditionStore ='/api/time-conditions-store'
+export const timingConditionUpdate ='/api/time-conditions-update'
+export const timingConditionDelete ='/api/time-conditions-delete'
+export const timingConditionEdit ='/api/time-conditions-edit'
+export const timingConditionCreate ='/api/time-conditions-create'
+
+//////////////////////// UserProfile /////////////////////////
+export const profileEdit ='/api/edit-profile'
+export const profileUpdate ='/api/update-profile'
+

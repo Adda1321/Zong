@@ -9,6 +9,12 @@ import {
   addDestinationID,
   handleModal,
   selectDestination,
+  select_TimeMatch,
+  add_TM_DestinationID,
+  add_TM_DestinationType,
+  select_TimeNotMatch,
+  add_TNM_DestinationID,
+  add_TNM_DestinationType,
 } from "../../store/Module";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -28,7 +34,8 @@ function IVRData(props) {
   const [data, setData] = useState();
   const Dest_ID = useSelector((state) => state.Dest.Destination_id);
   const dispatch = useDispatch();
-
+  const TimeMatch = useSelector((state) => state.Dest.TimeMatches);
+  const TimeNotMatch = useSelector((state) => state.Dest.TimeNotMatches);
   useEffect(() => {
     // alert("DATA");
   }, []);
@@ -37,7 +44,26 @@ function IVRData(props) {
     setData(CD);
   };
   //   console.log('dikk' , data)
+  const DestinationSelected = (ID) => (
+    TimeMatch &&
+      (
+        alert('in Time MAch'),
+        dispatch(add_TM_DestinationID(ID)),
+      dispatch(add_TM_DestinationType(props.Modle_Name))),
+    TimeNotMatch &&
+      (
+        alert('in Time NOT MAtch'),
+        dispatch(add_TNM_DestinationID(ID)),
+      dispatch(add_TNM_DestinationType(props.Modle_Name))),
+      
+    dispatch(addDestinationType(props.Modle_Name)),
+    dispatch(addDestinationID(ID)),
 
+    dispatch(handleModal(false)),
+    dispatch(select_TimeMatch(false)),
+    dispatch(select_TimeNotMatch(false))
+    // dispatch(selectDestination(true));
+  );
   return (
     <div>
       {/* {!data &&} */}
@@ -64,13 +90,7 @@ function IVRData(props) {
                     // alignItems: "center",
                     backgroundColor:Dest_ID == val.id ? 'lightgray' : ''
                   }}
-                  onClick={() => {
-                    // console.log("GETVALUE", props.Modle_Name, val.id);
-                    dispatch(addDestinationType(props.Modle_Name));
-                    dispatch(addDestinationID(val.id));
-                    dispatch(handleModal(false));
-                    // dispatch(selectDestination(true));
-                  }}
+                  onClick={() => DestinationSelected(val.id)}
                 >
                   <div style={{ height: 40 }}>
                     <span> {val.IVR_Name} </span>

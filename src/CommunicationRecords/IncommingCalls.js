@@ -39,8 +39,9 @@ import SearchOutGoing from "./ReportsCall/SearchOutGoing";
 import { Link } from "react-router-dom";
 import Table from "../components/Table";
 import CsvComponent from "./CsvComponent";
+import GetIVR from "../APICalls/IVRCall/GetIVR";
 
-export default function OutGoingCall() {
+export default function IncommingCalls() {
   const [Data, setData] = useState({});
   const [ExtensionShow, setExtensionShow] = React.useState(false);
   const [CreateData, setCreateData] = useState(null); //For showing the Selected options of user
@@ -48,6 +49,8 @@ export default function OutGoingCall() {
   const [Error, setError] = useState(null);
   const [Success, setSuccess] = useState(null);
   const [extensionData, setextensionData] = useState([]);
+  const [IVRData, setIVRData] = useState([]);
+  
   const [TableData, setTableData] = useState([]);
   const [flag, setFlag] = useState(false);
 
@@ -58,6 +61,7 @@ export default function OutGoingCall() {
     MinDuration: 0,
     Filter: "=",
     ToDate: new Date(),
+    IvrOption:''
   };
   // useEffect(() => {
   //   reset({ ...PreloadedValues });
@@ -82,6 +86,7 @@ export default function OutGoingCall() {
     MinDuration,
     Filter,
     ToDate,
+    IvrOption,
   }) => {
     setExtensionShow(true);
     var bodyFormData = new FormData();
@@ -98,6 +103,7 @@ export default function OutGoingCall() {
     bodyFormData.append("agent_number", Extension);
     bodyFormData.append("duration_min", MinDuration);
     bodyFormData.append("filter_symbol", Filter);
+    bodyFormData.append("ivr_id", IvrOption);
     // console.log('DATE BYDEFAULT: ' , moment(new Date()).format('YYYY-MM-DD'))
     // console.log("DATE BYDEFAULT: ", moment(FromDate).format("YYYY-MM-DD"));
     setData(bodyFormData);
@@ -117,10 +123,10 @@ export default function OutGoingCall() {
   };
 
   // ------------------- FOR TABLE DATA ------------------
-  function createData(first, sec, thir, forth, fifth, six) {
-    return { first, sec, thir, forth, fifth, six };
+  function createData(first, sec, thir, forth, fifth, six , seven) {
+    return { first, sec, thir, forth, fifth, six,seven };
   }
-  const header = ["Agent", "Client", "Date", "Time", "Duration", "Status"];
+  const header = [ "Client", 'ExtNo' , "Date", "Time", "Duration", "Status" , 'IVR Option'];
   // useEffect(() => {
 
   // }, [flag]);
@@ -132,12 +138,13 @@ export default function OutGoingCall() {
           user //it returns the array
         ) =>
           createData(
-            user.id.toString(),
+            user.client_id.toString(),
             user.sourceclid || "-",
             user.date,
             user.time,
             user.duration || "-",
-            user.recording
+            user.recording,
+            user.did_num || '-'
           )
       )
     );
@@ -154,10 +161,17 @@ export default function OutGoingCall() {
         />
       )}
 
-      <GetExtension
-        ErrorCallback={() => {}}
-        parentCallback={(CD) => setextensionData(CD)}
-        isLoading={() => {}}
+<GetExtension
+ErrorCallback={() => {}}
+parentCallback={(CD) => setextensionData(CD)}
+isLoading={() => {}}
+/>
+
+      
+      <GetIVR
+        // ErrorCallback={() => {}}
+        parentCallback={(CD) => setIVRData(CD)}
+        // isLoading={() => {}}
       />
 
       <Typography
@@ -165,7 +179,7 @@ export default function OutGoingCall() {
         // component="div"
         sx={{ ml: 3, mt: 2, color: "#4a4a4a", fontWeight: 500 }}
       >
-        OutGoing Calls
+        Incomming Calls
       </Typography>
       <Divider />
       {/* {Success && (
@@ -286,6 +300,46 @@ export default function OutGoingCall() {
                   </div>
                 </Grid> 
 
+
+                <Grid item xs={4} sx={{ mt: 2 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                    }}
+                  >
+                    <label style={{ marginRight: 10 }} htmlFor="IvrOption">
+                      IVR Option
+                    </label>
+                    <Controller
+                      name="IvrOption"
+                    
+                      control={control}
+                      // defaultValue={Number(EditedData?.rec_flag)}
+                      render={({ field }) => (
+                        <Select
+                          fullWidth
+                          size="small"
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          
+                          value={field.value}
+                          // label="Age"
+
+                          onChange={(e) => field.onChange(e.target.value)}
+                        >
+                          
+                          {IVRData?.map((val) => (
+                            <MenuItem key={val.id} value={val.id}>
+                              {val.IVR_Name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      )}
+                    />
+                  </div>
+                </Grid> 
                 <Grid item xs={5}>
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <div

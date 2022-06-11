@@ -13,6 +13,14 @@ import QueueForm from "../Queue/QueueForm";
 import SystemSoundForm from "../SystemSound/SystemSoundForm";
 import MOHClassForm from "../MOHClass/MOHClassForm";
 import AnnouncementForm from "../Announcement/AnnouncementForm";
+import TimingCondition from "../TimingConditions/TimingCondition";
+import TimingConditionForm from "../TimingConditions/TimingConditionForm";
+import {
+  add_TM_DestinationID,
+  add_TM_DestinationType,
+  add_TNM_DestinationID,
+  add_TNM_DestinationType,
+} from "../../store/Module";
 
 export default function NewExt(props) {
   const { gate, get_state, mode, EditData, update_id } = props;
@@ -36,6 +44,10 @@ export default function NewExt(props) {
   // Using the useDispatch hook to send payload back to redux
   const HandleModal = () => {
     dispatch(Modal_OpenClose(false));
+    dispatch(add_TM_DestinationID(""));
+    dispatch(add_TM_DestinationType(""));
+    dispatch(add_TNM_DestinationID(""));
+    dispatch(add_TNM_DestinationType(""));
     // console.log( 'get_state'  ,   )
     {
       get_state && get_state("");
@@ -113,6 +125,13 @@ export default function NewExt(props) {
 
           {mode === "announcement" && (
             <AnnouncementForm
+              // parentModal={closeModal}
+              EditData={EditData}
+              update_id={update_id}
+            />
+          )}
+          {mode === "timingCondition" && (
+            <TimingConditionForm
               // parentModal={closeModal}
               EditData={EditData}
               update_id={update_id}

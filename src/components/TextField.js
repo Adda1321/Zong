@@ -11,6 +11,7 @@ const  CustomTextField =  React.forwardRef(({
   defaultValue,
   label,
   inputRef,
+  type,
   //   name,
   id,
   ...field
@@ -31,6 +32,7 @@ const  CustomTextField =  React.forwardRef(({
           {...field}
           size={size}
           //   name={name}
+          type={type}
           id={id}
           // defaultValue={defaultValue}
           placeholder={placeholder}

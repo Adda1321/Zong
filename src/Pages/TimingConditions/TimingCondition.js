@@ -11,6 +11,8 @@ import GetExtension from "../../APICalls/ExtensionCall/GetExtension";
 
 import { addModule } from "../../store/Module";
 import GetSystemSound from "../../APICalls/SystemSoundCall/GetSystemSound";
+import GetTimeCondition from "../../APICalls/TimeCondition/GetTimeCondition";
+import Destination from "../../Destination";
 
 
 
@@ -23,24 +25,20 @@ function TimingCondition() {
 
   // alert('extension CALLED')
 
-  function createData(first, sec, thir, forth,fifth , sixth , seventh , eighth , emp) {
-    return { first, sec, thir, forth,fifth , sixth , seventh , eighth , emp };
+  function createData(first, sec, thir, forth , emp) {
+    return { first, sec, thir, forth,emp };
   }
  
 
-  const header = ["ID", "Name", "Category", "MOH Class", "Description", "Status", "Size"  , "Play"  , "Actions"];
+  const header = ["ID", "Name", "Day Range", "Time Range", "Actions"];
   const handleCallback = (childData) => {
     setData(
       childData.map((user) =>
         createData(
           user.id.toString(),
-          user.file_Name || '-',
-          user.category.title || '-',
-          user.moh?.name || '-' ,
-          user.detail || '-',
-          user.status || '-',
-          user.file_size || '-',
-          user.file_Path || '-',
+          user.TC_Name || '-',
+          user.Day_Range || '-',
+          user.Date_Ranges || '-' ,
           user.id.toString()
         )
       )
@@ -57,7 +55,7 @@ function TimingCondition() {
   return (
     <div>
       
-      <GetSystemSound
+      <GetTimeCondition
         parentCallback={handleCallback}
         // isLoading={handleLoading}
         ErrorCallback={ErrorHandling}
@@ -67,7 +65,7 @@ function TimingCondition() {
         // component="div"
         sx={{ ml: 3, mt: 2, color: "#4a4a4a", fontWeight: 500 }}
       >
-        System Sound
+        Timing Condition
       </Typography>
       <Divider />
       <div
@@ -79,13 +77,13 @@ function TimingCondition() {
           rows={data}
           header={header}
           // Error={error}
-          pagination={7}
-          editt={true}
-          mode={'SystSound'}
+          pagination={3}
+          // editt={true}
+          mode={'timingCondition'}
         />
         {/* } */}
       </div>
-
+<Destination/>
       {/* here gate is a prop that opens the Modal and get_state closes the modal (it is a callback fucntion) */}
       {/* <NewExt gate={open} get_state={handleClose} /> */}
     </div>

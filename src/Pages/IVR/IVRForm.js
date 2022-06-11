@@ -135,6 +135,9 @@ export default function IVRForm(props) {
     width: "60%",
     bgcolor: "background.paper",
     boxShadow: 24,
+    // width: '110px',
+    height: "100%",
+    overflow: "auto",
   };
 
   useEffect(() => {
@@ -198,7 +201,7 @@ export default function IVRForm(props) {
         },
       ],
     });
-    console.log("DEKHO", Options);
+    console.log("DEKHO--", Options);
     console.log("TYPE-- ", Dest_Type);
     console.log("ID-- ", Dest_ID);
 
@@ -583,19 +586,17 @@ export default function IVRForm(props) {
                                   // dispatch(selectDestination(false));
                                   dispatch(addDestinationType(false));
                                   dispatch(addDestinationID(false));
+
+                                  //  setValue(`Options.${index}.destID`, Dest_ID);
+                                  // setValue(`Options.${index}.destType`,Dest_Type);
                                 }}
-                              >
+                                >
                                 Destination
                               </Button>
-                              {Dest_ID &&
-                                // setValue(`Options.${index}.destID`, Dest_ID)
-                                console.log("Destination- ID", index)}
-                              {Dest_Type &&
-                                // setValue(
-                                //   `Options.${index}.destType`,
-                                //   Dest_Type
-                                // )
-                                console.log("Destination- Type", index)}
+                                {Dest_ID && alert (Dest_ID)}
+                                  {Dest_Type && alert (Dest_Type) }
+                              {/* {Dest_ID && console.log("Destination- ID", index)} */}
+                              {/* {Dest_Type && console.log("Destination- Type", index)} */}
                               <Button
                                 //   className="btn btn-outline-danger"
                                 sx={{ ml: 1.5 }}

@@ -162,7 +162,7 @@ export default function LandingPage() {
               name="password"
               label="Password"
               type="password"
-              id="password"
+              id="password" 
               autoComplete="current-password"
               error={Error ? true : false}
               helperText={Error}

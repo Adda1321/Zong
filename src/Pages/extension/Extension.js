@@ -10,8 +10,7 @@ import "../../App.css";
 import GetExtension from "../../APICalls/ExtensionCall/GetExtension";
 
 import { addModule } from "../../store/Module";
-
-
+import { useSelector } from "react-redux";
 
 function Extension() {
   const [open, setOpen] = React.useState(false);
@@ -19,7 +18,7 @@ function Extension() {
   const [loading, setloading] = React.useState();
   const [error, setError] = useState("");
 
-  // alert('extension CALLED')
+  const isReFetch = useSelector((state) => state.Refresh.Reload);
 
   function createData(first, sec, thir, forth, emp) {
     return { first, sec, thir, forth, emp };
@@ -40,6 +39,7 @@ function Extension() {
         )
       )
     );
+    console.log('IN EXTENSION-')
   };
   const handleLoading = (childData) => {
     setloading(childData);
@@ -51,6 +51,13 @@ function Extension() {
 
   return (
     <div>
+      {isReFetch === "Success" && (
+        <GetExtension
+          parentCallback={handleCallback}
+          isLoading={handleLoading}
+          ErrorCallback={ErrorHandling}
+        />
+      )}
       <GetExtension
         parentCallback={handleCallback}
         isLoading={handleLoading}
@@ -73,7 +80,7 @@ function Extension() {
           rows={data}
           header={header}
           Error={error}
-          mode={'ext'}
+          mode={"ext"}
           pagination={3}
         />
         {/* } */}

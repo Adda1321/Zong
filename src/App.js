@@ -5,6 +5,7 @@ import {
   Routes,
   Navigate,
   Outlet,
+  NavLink
 } from "react-router-dom";
 
 import "./App.css";
@@ -27,6 +28,11 @@ import CommunicationRecords from "./CommunicationRecords";
 import TimingCondition from "./Pages/TimingConditions/TimingCondition";
 import Call from "./Pages/Call/Call";
 import CallMessage from "./Pages/CallMessages/CallMessages";
+import IncommingCalls from "./CommunicationRecords/IncommingCalls";
+import PortalVoiceMail from "./CommunicationRecords/PortalVoiceMail";
+import UploadLogo from "./User/UploadLogo";
+import EditDetails from "./User/EditDetails";
+import NavList from "./Test";
 function App() {
   // const [token, setToken] = React.useState('');
   // alert('R O U T E')
@@ -40,7 +46,8 @@ function App() {
   return (
     <>
       <Router>
-        <Routes>
+        {/* <NavList/> */}
+          <Routes>
           <Route path="/login" element={<LandingPage />} />
           <Route
             path="/"
@@ -59,17 +66,24 @@ function App() {
               <Route path="/Vmail" element={<VoiceMail />} />
               <Route path="/announcement" element={<Announcement />} />
               <Route path="/analytic" element={<Analytics />} />
-              <Route path="/commRecord" element={<CommunicationRecords />} />
+
               <Route path="/TimingCondition" element={<TimingCondition />} />
               <Route path="/call" element={<Call />} />
-              <Route path="/messages" element={<CallMessage/>} />
-              
-              
+              <Route path="/messages" element={<CallMessage />} />
 
+              <Route path="/uploadLogo" element={<UploadLogo />} />
+              <Route path="/editDetails" element={<EditDetails />} />
+
+              <Route path="/reports" element={<Outlet />}>
+                <Route path="" element={<Navigate to="/reports/Outgoing" />} />
+
+                <Route path="Outgoing" element={<CommunicationRecords />} />
+                <Route path="Incoming" element={<IncommingCalls />} />
+                <Route path="PortaltoVoiceMail" element={<PortalVoiceMail />} />
+              </Route>
             </Route>
           </Route>
-        </Routes>
-        {/* </Layout> */}
+        </Routes>  
       </Router>
     </>
   );
@@ -89,17 +103,5 @@ const ProtectedRoute = ({ path, component: Component, ...rest }) => {
     </>
   );
 };
-
-{
-  /* <Route
-  path="/home"
-  element={
-    <>
-      <NavBar />
-      <Home />
-    </>
-  }
-/>; */
-}
 
 export default App;

@@ -2,30 +2,26 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ZongPortal } from "../../Service/ZongPortal";
 
-function StoreQueue({ body, Error , Success}) {
-  //   alert("VLALLA");
-  // const [error, setError] = useState({
-  //   List_Name: null,
-  //   // Num_1
-  // });
+function StoreTimeCondition({ body, Error , Success}) {
+
   //   const { body } = props;
 
   useEffect(() => {
     // alert(body.textField + body.NameField);
 
-    ZongPortal.StoreQueue(body)
+    ZongPortal.StoreTimeCondition(body)
       .then((res) => {
-        console.log("CHOOSE RESPONSE Store QUEUE", res);
+        console.log("CHOOSE RESPONSE Store Timing Condition", res);
         Success(res.data)
         // props.parentCallback(res.data.dial_lists);
       })
       .catch((err) => {
-        console.log("CHOOSE QUEUE  ERROR", err);
+        console.log("CHOOSE Timing STORE Condition  ERROR",err.response.data.error);
 
         if (err.response) {
           Error(err.response.data.error);
 
-          console.log("STATUS DATA", err.response.data.error.List_Name);
+          console.log("STATUS DATA", err.response.data.error);
         }
       });
 
@@ -35,4 +31,4 @@ function StoreQueue({ body, Error , Success}) {
   }, [body]);
 }
 
-export default StoreQueue;
+export default StoreTimeCondition;

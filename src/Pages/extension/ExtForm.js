@@ -27,6 +27,7 @@ import { useDispatch, useSelector } from "react-redux";
 // import { makeStyles } from '@material-ui/core/styles';
 import { pink, red } from "@mui/material/colors";
 import UpdateExtension from "../../APICalls/ExtensionCall/UpdateExtension";
+import { isReloading } from "../../store/Reload";
 
 // const useStyles = makeStyles({
 //   flexGrow: {
@@ -250,6 +251,7 @@ export default function ExtForm(props) {
                       dispatch(Modal_OpenClose(false));
                       setExtensionShow(false);
                       setupdate(false);
+                      dispatch(isReloading('Success'))
                       // Success('');
                       // Error('')
                     }}

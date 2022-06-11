@@ -15,17 +15,16 @@ import AlertTitle from "@mui/material/AlertTitle";
 import Stack from "@mui/material/Stack";
 import "../../App.css";
 
-
 import {
-    handleModal,
-    selectDestination,
-    addDestinationID,
-    addDestinationType,
-  } from "../../store/Module";
+  handleModal,
+  selectDestination,
+  addDestinationID,
+  addDestinationType,
+} from "../../store/Module";
 import GetSystemSound from "../../APICalls/SystemSoundCall/GetSystemSound";
 import GetVoiceMail from "../../APICalls/VoiceMailCall/GetVoiceMail";
 import StoreVoiceMail from "../../APICalls/VoiceMailCall/StoreVoiceMail";
-import { useDispatch , useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Destination from "../../Destination";
 import GetCallSetting from "../../APICalls/CallSettingsCall/GetCallSetting";
 import StoreCallSetting from "../../APICalls/CallSettingsCall/StoreCallSetting";
@@ -38,7 +37,7 @@ function Call() {
   const [Error, setError] = useState(null);
   const [Success, setSuccess] = useState(null);
 
-const dispatch= useDispatch();
+  const dispatch = useDispatch();
   const Dest_Type = useSelector((state) => state.Dest.Destination_type);
   const Dest_ID = useSelector((state) => state.Dest.Destination_id);
   const PreloadedValues = {
@@ -71,8 +70,8 @@ const dispatch= useDispatch();
 
     bodyFormData.append("call_entry_app_type", Dest_Type);
     bodyFormData.append("call_entry_app_id", Dest_ID);
-    bodyFormData.append("did_number", Number('03244028187'));
-    
+    bodyFormData.append("did_number", Number("03244028187"));
+
     setData(bodyFormData);
   };
   // console.log("DEKHO", CreateData?.record_message);
@@ -81,8 +80,8 @@ const dispatch= useDispatch();
   };
   const handleCallback = (CD) => {
     setCreateData(CD);
-    dispatch(addDestinationID(CD.entry_app_id))
-    dispatch(addDestinationType(CD.entry_app_type))
+    dispatch(addDestinationID(CD.entry_app_id));
+    dispatch(addDestinationType(CD.entry_app_type));
   };
   const handleSelectionData = (CD) => {
     setSelectionList(CD);
@@ -104,9 +103,9 @@ const dispatch= useDispatch();
         />
       )}
 
-<GetCallSetting
+      <GetCallSetting
         parentCallback={handleCallback}
-        
+
         // ErrorCallback={ErrorHandling}
       />
 
@@ -123,7 +122,7 @@ const dispatch= useDispatch();
           <Alert severity="success">{Success.message}</Alert>
         </Stack>
       )}
-{Error && (
+      {Error && (
         <Stack sx={{ width: "100%" }} spacing={2}>
           <Alert severity="error">{Error}</Alert>
         </Stack>
@@ -134,10 +133,9 @@ const dispatch= useDispatch();
         </Typography>
         <Divider sx={{ py: 0.5 }} />
         <Grid container sx={{ px: 10, py: 5 }} spacing={2}>
-        <Grid item xs={10}>
-        Master: 03155085530
+          <Grid item xs={10}>
+            Master: 03155085530
           </Grid>
-          
         </Grid>
         <Typography sx={{ color: "#8dc63f", fontSize: 20 }}>
           Set Destination
@@ -145,20 +143,19 @@ const dispatch= useDispatch();
         <Divider sx={{ py: 0.5 }} />
         <Grid container sx={{ px: 10, py: 5 }} spacing={2}>
           <Grid item xs={8}>
-              <span style={{marginRight:8}}>
-
-              Destination*
-              </span>
+            <span style={{ marginRight: 8 }}>Destination*</span>
             <Button
               variant="contained"
               onClick={() => dispatch(handleModal(true))}
             >
               Destination
             </Button>
+            
+            <label style={{ marginRight: 10 }} htmlFor="Members">
+                      {Dest_ID && `${Dest_ID}: ${Dest_Type}`}
+                    </label>
           </Grid>
 
-         
-          
           <Grid item xs={2}>
             <Button type="submit" variant="contained">
               SUBMIT
@@ -166,7 +163,7 @@ const dispatch= useDispatch();
           </Grid>
         </Grid>
       </form>
-      <Destination/>
+      <Destination />
     </div>
   );
 }

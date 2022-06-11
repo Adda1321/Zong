@@ -58,6 +58,7 @@ const UserSlice = createSlice({
     isSuccess: false,
     message: "",
     isLoggedIn: "",
+    // UserID:''
   },
   reducers: {},
   extraReducers: {
@@ -70,6 +71,8 @@ const UserSlice = createSlice({
       state.isSuccess = true;
       state.isLoggedIn = payload.token;
       state.message = "";
+      // state.UserID = payload.user?.id;
+      localStorage.setItem("userID", payload.user?.id);
       localStorage.setItem("token", payload.token);
     },
     [getUser.rejected]: (state, { payload }) => {
@@ -88,6 +91,8 @@ const UserSlice = createSlice({
       state.message = payload.message;
       //   state.isLoggedIn = payload.token;
       localStorage.removeItem("token");
+      localStorage.removeItem("userID");
+      
       //   localStorage.setItem("token", payload.token);
     },
     [LogoutUser.rejected]: (state, { payload }) => {

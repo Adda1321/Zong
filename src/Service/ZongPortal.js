@@ -31,6 +31,17 @@ import {
   AnnouncementEdit,
   CallSettingFetch,
   CallSettingStore,
+  timingConditionFetch,
+  timingConditionStore,
+  timingConditionCreate,
+  timingConditionDelete,
+  timingConditionEdit,
+  timingConditionUpdate,
+  searchOutGoingCalls,
+  searchIncommingCalls,
+  profileEdit,
+  profileUpdate
+
 
 
 } from "../Constants";
@@ -506,4 +517,139 @@ StoreCallSetting: async (body) => {
   return axios.post(url, body, config);
 },
 
+
+//-------------------------------- Timing Condition -------------
+FetchTimeCondition: async () => {
+  const token = localStorage.getItem("token");
+
+  const url = `${BaseURL}${timingConditionFetch}`;
+
+  const body = {
+    key: "value",
+  };
+  const config = {
+    headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+  };
+  // console.log("TOKEN", token);
+  return axios.post(url, body, config);
+},
+
+StoreTimeCondition: async (body) => {
+  const url = `${BaseURL}${timingConditionStore}`;
+  const token = localStorage.getItem("token");
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+      "Content-Type": "multipart/form-data",
+    },
+  };
+  return axios.post(url, body, config);
+},
+CreateTimeConditions: async (body) => {
+  const url = `${BaseURL}${timingConditionCreate}`;
+  const token = localStorage.getItem("token");
+
+  // for (var key of body.entries()) {
+  //   console.log("FormData-", key[0] + ", " + key[1]);
+  // }
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+      "Content-Type": "multipart/form-data",
+    },
+  };
+  return axios.post(url, body, config);
+},
+
+DeleteTimeCondition: async (body) => {
+  const url = `${BaseURL}${timingConditionDelete}`;
+  const token = localStorage.getItem("token");
+
+  const config = {
+    headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+  };
+  return axios.post(url, body, config);
+},
+
+
+EditTimeCondition: async (body) => {
+  const url = `${BaseURL}${timingConditionEdit}`;
+  const token = localStorage.getItem("token");
+
+  const config = {
+    headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+  };
+  return axios.post(url, body, config);
+},
+
+// --------------------------- Communication Reports --------------------
+
+SearchOutGoing: async (body) => {
+  const url = `${BaseURL}${searchOutGoingCalls}`;
+  const token = localStorage.getItem("token");
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+      "Content-Type": "multipart/form-data",
+    },
+  };
+  return axios.post(url, body, config);
+},
+SearchIncoming: async (body) => {
+  const url = `${BaseURL}${searchIncommingCalls}`;
+  const token = localStorage.getItem("token");
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+      "Content-Type": "multipart/form-data",
+    },
+  };
+  return axios.post(url, body, config);
+},
+
+
+
+// ----------------------------- USER PROFILE ----------------------
+
+EditProfile: async (body) => {
+  const url = `${BaseURL}${profileEdit}`;
+  const token = localStorage.getItem("token");
+
+  // for (var key of body.entries()) {
+  //   console.log("FormData-", key[0] + ", " + key[1]);
+  // }
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+      "Content-Type": "multipart/form-data",
+    },
+  };
+  return axios.post(url, body, config);
+},
+UpdateProfile: async (body) => {
+  const url = `${BaseURL}${profileUpdate}`;
+  // for (var key of body.entries()) {
+  //   console.log("FormData-", key[0] + ", " + key[1]);
+  // }
+  const token = localStorage.getItem("token");
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+      "Content-Type": "multipart/form-data",
+    },
+  };
+  return axios.post(url, body, config);
+},
 };

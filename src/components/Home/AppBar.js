@@ -1,7 +1,7 @@
 import * as React from "react";
 import "../../App.css";
 import { styled, useTheme } from "@mui/material/styles";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, NavLink } from "react-router-dom";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
@@ -44,7 +44,7 @@ import InputLabel from "@mui/material/InputLabel";
 import FlagIcon from "../FactoryIcon";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { LogoutUser } from "../../store/UserCall";
 
 import Adda from "../../Adda.PNG";
@@ -52,7 +52,11 @@ import Adda from "../../Adda.PNG";
 import { removeToken } from "../../store/UserCall";
 const drawerWidth = 240;
 
-const pages = [{name : "Analytics" , path:'analytic'}, {name: "Communication Records" , path:'commRecord'}, {name:"03248562947" , path:''}];
+const pages = [
+  { name: "Analytics", path: "analytic" },
+  { name: "Communication Records", path: "/reports/Outgoing" },
+  { name: "03248562947", path: "" },
+];
 const settings = [
   { name: "Edit Profile", icon: <ManageAccountsIcon /> },
   { name: "Upload Logo", icon: <FileUploadOutlinedIcon /> },
@@ -126,7 +130,6 @@ const Drawer = styled(MuiDrawer, {
 
 export default function MiniDrawer(props) {
   const theme = useTheme();
-  
 
   const Theme = createTheme({
     palette: {
@@ -153,18 +156,21 @@ export default function MiniDrawer(props) {
     JSON.parse(window.localStorage.getItem("age"))
       ? setAge(JSON.parse(window.localStorage.getItem("age")))
       : setAge(10);
-    window.localStorage.getItem("path")
-      ? setPath(window.localStorage.getItem("path"))
-      : setPath("/");
-    console.log("path ->", JSON.parse(window.localStorage.getItem("age")));
+    // window.localStorage.getItem("path")
+    //   ? setPath(window.localStorage.getItem("path"))
+    //   : setPath("/");
+    // console.log("path ->", JSON.parse(window.localStorage.getItem("age")));
     // window.localStorage.clear();
   }, []);
 
   React.useEffect(() => {
-    console.log("path", age);
+    // console.log("path", age);
     window.localStorage.setItem("age", age);
-    window.localStorage.setItem("path", path);
-  }, [age, path]);
+    // window.localStorage.setItem("path", path);
+  }, [age]);
+
+  
+  const btn_sidebarSec = { color: "pink" };
 
   const handleChange = (event) => {
     setAge(event.target.value);
@@ -177,11 +183,22 @@ export default function MiniDrawer(props) {
     setAnchorElUser(event.currentTarget);
   };
 
+  const handleEditProfile = () => {
+    navigate("/editDetails");
+    setAnchorElUser(false);
+  };
+
+  const handleUploadLogo = () => {
+    navigate("/uploadLogo");
+    setAnchorElUser(false);
+  };
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-
   const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+  const handleUserLogOut = () => {
     setAnchorElUser(null);
     dispatch(LogoutUser());
     localStorage.removeItem("token");
@@ -251,24 +268,24 @@ export default function MiniDrawer(props) {
             >
               {pages.map((page, index) => (
                 <React.Fragment key={index}>
-                   <Link
-                  to={page.path  }
-                  style={{ color: "black", textDecoration: "none" }}
-                >
-                  <Button
-                    className=" btn btn-start"
-                    key={page}
-                    // onClick={()=>navigate('/')}
-                    sx={{
-                      mx: 0.5,
-                      color: "white",
-                      height: "60px",
-                      display: "block",
-                      backgroundColor: "",
-                    }}
+                  <Link
+                    to={page.path}
+                    style={{ color: "black", textDecoration: "none" }}
                   >
-                    {page.name}
-                  </Button>
+                    <Button
+                      className=" btn btn-start"
+                      key={page}
+                      // onClick={()=>navigate('/')}
+                      sx={{
+                        mx: 0.5,
+                        color: "white",
+                        height: "60px",
+                        display: "block",
+                        backgroundColor: "",
+                      }}
+                    >
+                      {page.name}
+                    </Button>
                   </Link>
                 </React.Fragment>
               ))}
@@ -330,7 +347,16 @@ export default function MiniDrawer(props) {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
+                  <MenuItem
+                    key={setting.name}
+                    onClick={
+                      setting.name === "Logout"
+                        ? handleUserLogOut
+                        : setting.name === "Edit Profile"
+                        ? handleEditProfile
+                        : setting.name === "Upload Logo" && handleUploadLogo
+                    }
+                  >
                     <IconButton
                       sx={{ color: "#8dc63f" }}
                       disableFocusRipple
@@ -409,14 +435,18 @@ export default function MiniDrawer(props) {
               { name: "Call Messages", icon: <ForumIcon />, path: "messages" },
             ].map((text, index) => (
               <Tooltip title={text.name} placement="right-start" key={index}>
-                <Link
+                <NavLink
                   to={text.path}
                   style={{ color: "black", textDecoration: "none" }}
-                >
+                  // end
+                  // className={({ isActive }) =>
+                  //   isActive ? "sidebar btn-sidebarSec" : "sidebar btn-sidebar"
+                  // }
+                  
+                  >
                   <ListItemButton
-                    className={`sidebar  ${
-                      text.path === path ? "btn-sidebarSec" : "btn-sidebar"
-                    } `}
+                  className={`sidebar
+                  ${text.path === path ? "btn-sidebarSec" : "btn-sidebar"}`}
                     key={text.name}
                     sx={{
                       minHeight: 48,
@@ -444,7 +474,7 @@ export default function MiniDrawer(props) {
                       sx={{ opacity: open ? 1 : 0 }}
                     />
                   </ListItemButton>
-                </Link>
+                </NavLink>
               </Tooltip>
             ))}
           </List>

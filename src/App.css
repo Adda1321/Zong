@@ -73,10 +73,11 @@ transition: transform 0.3s ease;
 ;
  }
 
- .sidebar{
+/* .sidebar{
   position: relative;
  
- }
+ }  */
+
  .sidebar::after{
   content: '';
   position: absolute;
@@ -155,4 +156,15 @@ transform: scale(1,1);
 
 .audioStyle{
   width: 250px;
+}
+
+.test{
+  color:red
+}
+.test2{
+ color:rgb(146, 64, 210)
+}
+
+.test3{
+  background-color:rgb(25, 178, 117)
 }

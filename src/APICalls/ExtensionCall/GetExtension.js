@@ -7,13 +7,13 @@ function GetExtension(props) {
     ZongPortal.FetchExtension()
       .then((res) => {
         props.isLoading(true);
-        // console.log('CHOOSE' , res.data.dial_lists)
+        console.log('CHOOSE Extension Success' , res.data.dial_lists)
         props.parentCallback(res.data.dial_lists);
         // handleDestination
         props.isLoading(false);
       })
       .catch((err) => {
-        console.log("Extension-", err);
+        console.log("Extension-  Get Error", err);
         props.ErrorCallback(err);
       });
   }, []);
