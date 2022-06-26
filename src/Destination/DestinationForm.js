@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -10,7 +10,11 @@ import ExtData from "./DataHandle/ExtData";
 import { objectOf } from "prop-types";
 import IVRData from "./DataHandle/IVRData";
 import { useSelector } from "react-redux";
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import TimeConditionData from "./DataHandle/TimeCondData";
+import QueueData from "./DataHandle/QueueData";
+import AnnouncementData from "./DataHandle/AnnouncementData";
+import VoiceMailData from "./DataHandle/VoiceMailData";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -25,9 +29,9 @@ const Obj_List = [
   { name: "Time Conditions", val: "TimeCondition" },
   { name: "IVR", val: "IVR" },
   { name: "Queue", val: "Queue" },
-  { name: "Announcement", val: "SystemSound" },
+  { name: "Announcement", val: "Announcement" },
   { name: "Voice Mail", val: "Voicemail" },
-  { name: "Hangup", val: "Hangup" },
+  // { name: "Hangup", val: "Hangup" },
 ];
 const header = {
   bgcolor: "#8dc63f",
@@ -63,11 +67,17 @@ const StyledButton = withStyles({
 export default function DestinationForm() {
   const Dest_ID = useSelector((state) => state.Dest.Destination_id);
   const Dest_Type = useSelector((state) => state.Dest.Destination_type);
+
   
-  const [component, setComponent] = useState( {
-    name: Dest_Type ||  "Extensions List",  //This check is for opening Destination if it is selected by type
+
+  const [component, setComponent] = useState({
+    name: Dest_Type || "Extensions List", //This check is for opening Destination if it is selected by type
     val: "DialList",
   });
+
+  useEffect(() => {
+    console.log("COMPONENET-", component);
+  }, [component]);
 
   const classes = useStyles();
   const SaveHandle = (name) => {
@@ -107,15 +117,17 @@ export default function DestinationForm() {
             {Obj_List.map((name, key) => {
               return (
                 <>
-                <Grid  item xs={12} sx={{ py: 1 }} key={key}>
-                  <StyledButton
-                    className={component.name === name.name ? classes.button : ""}
-                    sx={{ pl: 2, py: 2, width: "100%" }}
-                    onClick={() => SaveHandle(name)}
-                  >
-                    {name.name}
-                  </StyledButton>
-                </Grid>
+                  <Grid item xs={12} sx={{ py: 1 }} key={key}>
+                    <StyledButton
+                      className={
+                        component.name === name.name ? classes.button : ""
+                      }
+                      sx={{ pl: 2, py: 2, width: "100%" }}
+                      onClick={() => SaveHandle(name)}
+                    >
+                      {name.name}
+                    </StyledButton>
+                  </Grid>
                 </>
               );
             })}
@@ -139,16 +151,17 @@ export default function DestinationForm() {
                 switch (component.name) {
                   case "Extensions List":
                     return <ExtData Modle_Name={component.name} />;
-                  //   case "Time Conditions":
-                  //     return <Playing handleClick={handleClick} />;
-                    case "IVR":
-                      return  <IVRData Modle_Name={component.name} /> ;
-                  //   case "Queue":
-                  //     return <Won handleClick={handleClick} />;
-                  //   case "Announcement":
-                  //     return <Lost handleClick={handleClick} />;
-                  //   case "Voice Mail":
-                  //     return <Won handleClick={handleClick} />;
+                  case "Time Conditions":
+                    return <TimeConditionData Modle_Name={component.name} />;
+                  case "IVR":
+                    return <IVRData Modle_Name={component.name} />;
+                  case "Queue":
+                    return <QueueData Modle_Name={component.name} />;
+                  case "Announcement":
+                    return <AnnouncementData Modle_Name={component.name} />;
+                    case "Voice Mail":
+                      
+                      return <VoiceMailData Modle_Name={component.name} />;
                   //   case "Hungup":
                   //     return <Won handleClick={handleClick} />;
                   default:

@@ -18,6 +18,11 @@ import {
 } from "../../store/Module";
 
 import { useDispatch, useSelector } from "react-redux";
+import GetTimeCondition from "../../APICalls/TimeCondition/GetTimeCondition";
+import GetQueue from "../../APICalls/QueueCall/GetQueue";
+import { Announcement } from "@mui/icons-material";
+import GetAnnouncement from "../../APICalls/AnnouncementCall/GetAnnouncement";
+import GetVoiceMail from "../../APICalls/VoiceMailCall/GetVoiceMail";
 
 const StyledButton = withStyles({
   root: {
@@ -30,8 +35,8 @@ const StyledButton = withStyles({
   },
 })(Button);
 
-function IVRData(props) {
-  const [data, setData] = useState();
+function VoiceMailData(props) {
+  const [data, setData] = useState({});
   const Dest_ID = useSelector((state) => state.Dest.Destination_id);
   const dispatch = useDispatch();
   const TimeMatch = useSelector((state) => state.Dest.TimeMatches);
@@ -41,24 +46,21 @@ function IVRData(props) {
   }, []);
 
   const handleClick = (CD) => {
+    console.log('CHILD DATA',CD)
     setData(CD);
   };
   //   console.log('dikk' , data)
   const DestinationSelected = (ID) => (
     TimeMatch &&
-      (
-        // alert('in Time MAch'),
-        dispatch(add_TM_DestinationID(ID)),
+      // alert('in Time MAch'),
+      (dispatch(add_TM_DestinationID(ID)),
       dispatch(add_TM_DestinationType(props.Modle_Name))),
     TimeNotMatch &&
-      (
-        // alert('in Time NOT MAtch'),
-        dispatch(add_TNM_DestinationID(ID)),
+      // alert('in Time NOT MAtch'),
+      (dispatch(add_TNM_DestinationID(ID)),
       dispatch(add_TNM_DestinationType(props.Modle_Name))),
-      
     dispatch(addDestinationType(props.Modle_Name)),
     dispatch(addDestinationID(ID)),
-
     dispatch(handleModal(false)),
     dispatch(select_TimeMatch(false)),
     dispatch(select_TimeNotMatch(false))
@@ -68,10 +70,16 @@ function IVRData(props) {
     <div>
       {/* {!data &&} */}
 
-      <GetIVR parentCallback={handleClick} />
+      <GetVoiceMail
+        SelectionList={() => {}}
+        ErrorCallback={() => {}}
+        parentCallback={handleClick}
+      />
       {data ? (
         <div>
-          {data?.map((val, key) => (
+            {/* // Need to check the data what to show 
+            // is it from voice mailor sound object or from the whole Array */}
+          {Object.keys(data)?.map((val, key) => (
             <React.Fragment key={key}>
               <div
                 style={{
@@ -88,23 +96,30 @@ function IVRData(props) {
                     display: "flex",
                     justifyContent: "flex-start",
                     // alignItems: "center",
-                    backgroundColor:Dest_ID == val.id ? 'lightgray' : ''
+                    backgroundColor: Dest_ID == val.id ? "lightgray" : "",
                   }}
                   onClick={() => DestinationSelected(val.id)}
                 >
                   <div style={{ height: 40 }}>
-                    <span> {val.IVR_Name} </span>
+                    {/* <span> {val.Dest_After_Play} </span> */}
 
-                    <span style={{ marginLeft: 7 }}>Count: {val.id}</span>
+                    <div style={{ marginLeft: 7 }}>
+                      {/* Category: {val.catid} Deyail: {val.detail} */}
+                    </div>
                   </div>
                 </StyledButton>
-
+{/* 
                 {Dest_ID == val.id && (
-                  <div style={{ alignContent: "center", marginTop: 10, marginRight:10 }}>
-                    
+                  <div
+                    style={{
+                      alignContent: "center",
+                      marginTop: 10,
+                      marginRight: 10,
+                    }}
+                  >
                     <CheckCircleOutlineIcon fontSize="large" color="success" />
                   </div>
-                )}
+                )} */}
               </div>
               <Divider />
             </React.Fragment>
@@ -127,4 +142,4 @@ function IVRData(props) {
   );
 }
 
-export default IVRData;
+export default VoiceMailData;

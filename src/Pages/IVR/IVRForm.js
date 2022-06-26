@@ -36,6 +36,7 @@ import { resetWarningCache } from "prop-types";
 export default function IVRForm(props) {
   const Dest_Type = useSelector((state) => state.Dest.Destination_type);
   const Dest_ID = useSelector((state) => state.Dest.Destination_id);
+
   const DestinationSelected = useSelector(
     (state) => state.Dest.selectDestination
   );
@@ -66,6 +67,7 @@ export default function IVRForm(props) {
   const [Success, setSuccess] = useState(null);
   const [List, setList] = useState("");
   const [openForm, setOpenForm] = useState(false);
+
   // const [OpenDest, setOpenDest] = useState(false);
 
   //STATES to store related data of API RESPONSE
@@ -73,6 +75,9 @@ export default function IVRForm(props) {
   const [Input_TO, setITO] = useState(null);
   const [Input_LO, setILO] = useState(null);
 
+  const [flag, setFlag] = useState(false);
+  const [Index, setIndex] = useState(0);
+  const [ButtonValue, setButtonValue] = useState(null); // To Get the state of a button
   const accent = pink.A200;
   const dispatch = useDispatch();
 
@@ -112,6 +117,27 @@ export default function IVRForm(props) {
       name: "Options",
     }
   );
+  // useEffect(() => {
+  //   if (Index  >= 0  ) {
+  //     alert(Index);
+  //     setValue(`Options.${Index}.destID`, Dest_ID);
+  //     setValue(`Options.${Index}.destType`, Dest_Type);
+  //   }
+  // }, [Index]);
+
+  useEffect(() => {
+    setButtonValue(Dest_ID);
+  }, [Dest_ID]);
+
+  const DestinationHandle = (index) => {
+    dispatch(handleModal(true));
+
+    dispatch(addDestinationType(false));
+    dispatch(addDestinationID(false));
+
+    setValue(`Options.${index}.destID`, Dest_ID);
+    setValue(`Options.${index}.destType`, Dest_Type);
+  };
 
   // useEffect(
   //   () =>
@@ -189,6 +215,7 @@ export default function IVRForm(props) {
     // );
     // bodyFormData.append("onnet_minutes", 10);
     // bodyFormData.append("offet_minutes", 10);
+    console.log("OPTIONS", Options);
     reset({
       Options: [
         {
@@ -201,7 +228,7 @@ export default function IVRForm(props) {
         },
       ],
     });
-    console.log("DEKHO--", Options);
+    // console.log("DEKHO--", Options);
     console.log("TYPE-- ", Dest_Type);
     console.log("ID-- ", Dest_ID);
 
@@ -549,8 +576,6 @@ export default function IVRForm(props) {
                         <div key={item.id}>
                           {fields[index].value !== null && (
                             <>
-                              {/* {console.log("WHAT FIELD", fields[index].value)} */}
-                              {/* {alert('IN')} */}
                               <TextField
                                 {...register(`Options.${index}.Opt_key`)}
                                 size="small"
@@ -580,23 +605,13 @@ export default function IVRForm(props) {
                                 placeholder="Option Name"
                               />
                               <Button
+                                key={ButtonValue}
                                 variant="contained"
-                                onClick={() => {
-                                  dispatch(handleModal(true));
-                                  // dispatch(selectDestination(false));
-                                  dispatch(addDestinationType(false));
-                                  dispatch(addDestinationID(false));
-
-                                  //  setValue(`Options.${index}.destID`, Dest_ID);
-                                  // setValue(`Options.${index}.destType`,Dest_Type);
-                                }}
-                                >
+                                onClick={() => DestinationHandle(index)}
+                              >
                                 Destination
                               </Button>
-                                {Dest_ID && alert (Dest_ID)}
-                                  {Dest_Type && alert (Dest_Type) }
-                              {/* {Dest_ID && console.log("Destination- ID", index)} */}
-                              {/* {Dest_Type && console.log("Destination- Type", index)} */}
+
                               <Button
                                 //   className="btn btn-outline-danger"
                                 sx={{ ml: 1.5 }}
