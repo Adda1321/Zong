@@ -18,6 +18,7 @@ import {
 } from "../../store/Module";
 
 import { useDispatch, useSelector } from "react-redux";
+import GetTimeCondition from "../../APICalls/TimeCondition/GetTimeCondition";
 
 const StyledButton = withStyles({
   root: {
@@ -30,7 +31,7 @@ const StyledButton = withStyles({
   },
 })(Button);
 
-function IVRData(props) {
+function TimeConditionData(props) {
   const [data, setData] = useState();
   const Dest_ID = useSelector((state) => state.Dest.Destination_id);
   const dispatch = useDispatch();
@@ -67,8 +68,9 @@ function IVRData(props) {
   return (
     <div>
       {/* {!data &&} */}
+      
 
-      <GetIVR parentCallback={handleClick} />
+      <GetTimeCondition ErrorCallback={()=>{}} parentCallback={handleClick} />
       {data ? (
         <div>
           {data?.map((val, key) => (
@@ -85,7 +87,7 @@ function IVRData(props) {
                 <StyledButton
                   sx={{
                     width: "100%",
-                    display: "flex",
+                    // display: "flex",
                     justifyContent: "flex-start",
                     // alignItems: "center",
                     backgroundColor:Dest_ID == val.id ? 'lightgray' : ''
@@ -93,9 +95,9 @@ function IVRData(props) {
                   onClick={() => DestinationSelected(val.id)}
                 >
                   <div style={{ height: 40 }}>
-                    <span> {val.IVR_Name} </span>
+                    <span> {val.DEST_true_App} </span>
 
-                    <span style={{ marginLeft: 7 }}>Count: {val.id}</span>
+                    <div style={{ marginLeft: 7 }}>Range: {val.Time_Range}</div>
                   </div>
                 </StyledButton>
 
@@ -127,4 +129,4 @@ function IVRData(props) {
   );
 }
 
-export default IVRData;
+export default TimeConditionData;

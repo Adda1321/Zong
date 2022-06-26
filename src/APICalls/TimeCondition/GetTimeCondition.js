@@ -7,7 +7,7 @@ function GetTimeCondition(props) {
     ZongPortal.FetchTimeCondition()
       .then((res) => {
         // props.isLoading(true);
-        // console.log('CHOOSE' , res.data.dial_lists)
+        console.log('CHOOSE Time Condition' , res.data.time_conditions)
         props.parentCallback(res.data.time_conditions);
         // handleDestination
         // props.isLoading(false);

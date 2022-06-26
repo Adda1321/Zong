@@ -12,7 +12,7 @@ function GetQueue(props) {
     ZongPortal.FetchQueue()
       .then((res) => {
         // props.isLoading(true)
-        console.log('CHOOSE' , res.data.queues)
+        console.log('CHOOSE Queue' , res.data.queues)
         props.parentCallback(res.data.queues);
         // props.isLoading(false)
       })

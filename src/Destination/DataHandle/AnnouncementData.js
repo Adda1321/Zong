@@ -18,6 +18,10 @@ import {
 } from "../../store/Module";
 
 import { useDispatch, useSelector } from "react-redux";
+import GetTimeCondition from "../../APICalls/TimeCondition/GetTimeCondition";
+import GetQueue from "../../APICalls/QueueCall/GetQueue";
+import { Announcement } from "@mui/icons-material";
+import GetAnnouncement from "../../APICalls/AnnouncementCall/GetAnnouncement";
 
 const StyledButton = withStyles({
   root: {
@@ -30,7 +34,7 @@ const StyledButton = withStyles({
   },
 })(Button);
 
-function IVRData(props) {
+function AnnouncementData(props) {
   const [data, setData] = useState();
   const Dest_ID = useSelector((state) => state.Dest.Destination_id);
   const dispatch = useDispatch();
@@ -67,8 +71,9 @@ function IVRData(props) {
   return (
     <div>
       {/* {!data &&} */}
+      
 
-      <GetIVR parentCallback={handleClick} />
+      <GetAnnouncement isLoading={()=>{}} ErrorCallback={()=>{}} parentCallback={handleClick} />
       {data ? (
         <div>
           {data?.map((val, key) => (
@@ -93,9 +98,9 @@ function IVRData(props) {
                   onClick={() => DestinationSelected(val.id)}
                 >
                   <div style={{ height: 40 }}>
-                    <span> {val.IVR_Name} </span>
+                    <span> {val.Dest_After_Play} </span>
 
-                    <span style={{ marginLeft: 7 }}>Count: {val.id}</span>
+                    <div style={{ marginLeft: 7 }}>Category: {val.catid} Deyail: {val.detail}</div>
                   </div>
                 </StyledButton>
 
@@ -127,4 +132,4 @@ function IVRData(props) {
   );
 }
 
-export default IVRData;
+export default AnnouncementData;
